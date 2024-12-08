@@ -31,7 +31,7 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         mime = "image/jxl";
     } else {
         // magic is slow, so only use it when no recognized extension is found
-        auto handle = magic_open(MAGIC_NONE | MAGIC_COMPRESS);
+        auto handle = magic_open(MAGIC_NONE | MAGIC_COMPRESS | MAGIC_SYMLINK);
         magic_load(handle, nullptr);
 
         const auto type_str   = std::string(magic_file(handle, path.c_str()));
