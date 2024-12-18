@@ -1,4 +1,5 @@
 #include <hyprgraphics/color/Color.hpp>
+#include <algorithm>
 #include <cmath>
 
 using namespace Hyprgraphics;
