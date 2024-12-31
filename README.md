@@ -6,6 +6,21 @@ Hyprgraphics is a small C++ library with graphics / resource related utilities u
 
 Hyprgraphics depends on the ABI stability of the stdlib implementation of your compiler. Sover bumps will be done only for hyprgraphics ABI breaks, not stdlib.
 
+## Dependencies
+
+Requires a compiler with C++26 support.
+
+Dep list:
+ - pixman-1
+ - cairo
+ - hyprutils
+ - libjpeg
+ - libwebp
+ - libjxl
+ - libjxl_cms
+ - libjxl_threads
+ - libmagic
+
 ## Building
 
 ```sh
