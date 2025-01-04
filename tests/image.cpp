@@ -25,8 +25,11 @@ int main(int argc, char** argv, char** envp) {
     for (auto& file : std::filesystem::directory_iterator("./resource/images/")) {
         if (!file.is_regular_file())
             continue;
-
-        EXPECT(tryLoadImage(file.path()), true);
+        auto expectation = true;
+#ifndef JXL_FOUND
+        if (file.path().filename() == "hyprland.jxl") expectation = false;
+#endif
+        EXPECT(tryLoadImage(file.path()), expectation);
     }
 
     return ret;
