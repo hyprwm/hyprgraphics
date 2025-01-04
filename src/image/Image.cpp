@@ -1,7 +1,9 @@
 #include <hyprgraphics/image/Image.hpp>
 #include "formats/Bmp.hpp"
 #include "formats/Jpeg.hpp"
+#ifdef JXL_FOUND
 #include "formats/JpegXL.hpp"
+#endif
 #include "formats/Webp.hpp"
 #include <magic.h>
 #include <format>
@@ -27,8 +29,15 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         CAIROSURFACE = WEBP::createSurfaceFromWEBP(path);
         mime = "image/webp";
     } else if (path.find(".jxl") == len - 4 || path.find(".JXL") == len - 4) {
+
+#ifdef JXL_FOUND
         CAIROSURFACE = JXL::createSurfaceFromJXL(path);
         mime = "image/jxl";
+#else
+        lastError = "hyprgraphics compiled without JXL support";
+        return;
+#endif
+
     } else {
         // magic is slow, so only use it when no recognized extension is found
         auto handle = magic_open(MAGIC_NONE | MAGIC_COMPRESS | MAGIC_SYMLINK);

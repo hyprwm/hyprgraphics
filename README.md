@@ -16,9 +16,9 @@ Dep list:
  - hyprutils
  - libjpeg
  - libwebp
- - libjxl
- - libjxl_cms
- - libjxl_threads
+ - libjxl [optional]
+ - libjxl_cms [optional]
+ - libjxl_threads [optional]
  - libmagic
 
 ## Building

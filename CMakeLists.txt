@@ -47,10 +47,20 @@ pkg_check_modules(
   hyprutils
   libjpeg
   libwebp
+  libmagic)
+
+pkg_check_modules(
+  JXL
   libjxl
   libjxl_cms
   libjxl_threads
-  libmagic)
+)
+if(NOT JXL_FOUND)
+  file(GLOB_RECURSE JPEGXLFILES CONFIGURE_DEPENDS "src/*JpegXL.cpp")
+  list(REMOVE_ITEM SRCFILES ${JPEGXLFILES})
+else()
+  add_compile_definitions(JXL_FOUND)
+endif()
 
 add_library(hyprgraphics SHARED ${SRCFILES})
 target_include_directories(
@@ -59,7 +69,7 @@ target_include_directories(
   PRIVATE "./src")
 set_target_properties(hyprgraphics PROPERTIES VERSION ${HYPRGRAPHICS_VERSION}
                                               SOVERSION 0)
-target_link_libraries(hyprgraphics PkgConfig::deps)
+target_link_libraries(hyprgraphics PkgConfig::deps ${JXL_LIBRARIES})
 
 # tests
 add_custom_target(tests)
