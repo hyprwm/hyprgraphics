@@ -52,8 +52,6 @@ pkg_check_modules(
 pkg_check_modules(
   JXL
   libjxl
-  libjxl_cms
-  libjxl_threads
 )
 if(NOT JXL_FOUND)
   file(GLOB_RECURSE JPEGXLFILES CONFIGURE_DEPENDS "src/*JpegXL.cpp")

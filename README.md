@@ -17,8 +17,6 @@ Dep list:
  - libjpeg
  - libwebp
  - libjxl [optional]
- - libjxl_cms [optional]
- - libjxl_threads [optional]
  - libmagic
 
 ## Building

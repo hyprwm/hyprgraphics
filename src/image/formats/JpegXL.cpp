@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <fstream>
 #include <jxl/decode_cxx.h>
-#include <jxl/resizable_parallel_runner_cxx.h>
 #include <vector>
 
 std::expected<cairo_surface_t*, std::string> JXL::createSurfaceFromJXL(const std::string& path) {
@@ -22,9 +21,6 @@ std::expected<cairo_surface_t*, std::string> JXL::createSurfaceFromJXL(const std
         return std::unexpected("loading jxl: not jxl");
 
     auto dec    = JxlDecoderMake(nullptr);
-    auto runner = JxlResizableParallelRunnerMake(nullptr);
-    if (JXL_DEC_SUCCESS != JxlDecoderSetParallelRunner(dec.get(), JxlResizableParallelRunner, runner.get()))
-        return std::unexpected("loading jxl: JxlResizableParallelRunner failed");
 
     if (JXL_DEC_SUCCESS != JxlDecoderSubscribeEvents(dec.get(), JXL_DEC_BASIC_INFO | JXL_DEC_FULL_IMAGE))
         return std::unexpected("loading jxl: JxlDecoderSubscribeEvents failed");
@@ -64,7 +60,6 @@ std::expected<cairo_surface_t*, std::string> JXL::createSurfaceFromJXL(const std
             cairo_surface_destroy(cairoSurface);
             return std::unexpected("loading jxl: JxlDecoderProcessInput expected more input");
         } else if (status == JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
-            JxlResizableParallelRunnerSetThreads(runner.get(), JxlResizableParallelRunnerSuggestThreads(basicInfo.xsize, basicInfo.ysize));
             size_t bufferSize;
             if (JXL_DEC_SUCCESS != JxlDecoderImageOutBufferSize(dec.get(), &format, &bufferSize)) {
                 cairo_surface_destroy(cairoSurface);
