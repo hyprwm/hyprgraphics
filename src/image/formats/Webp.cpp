@@ -1,5 +1,6 @@
 #include "Webp.hpp"
 
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <webp/decode.h>
@@ -46,7 +47,8 @@ std::expected<cairo_surface_t*, std::string> WEBP::createSurfaceFromWEBP(const s
     config.options.no_fancy_upsampling = 1;
     config.output.u.RGBA.rgba          = CAIRODATA;
     config.output.u.RGBA.stride        = CAIROSTRIDE;
-    config.output.u.RGBA.size          = CAIROSTRIDE * HEIGHT;
+    // SHIT!
+    config.output.u.RGBA.size          = static_cast<size_t>(CAIROSTRIDE * HEIGHT);
     config.output.is_external_memory   = 1;
     config.output.width                = WIDTH;
     config.output.height               = HEIGHT;
