@@ -7,7 +7,7 @@
 
 using namespace Hyprgraphics;
 
-static bool tryLoadImage(const std::string& path) {
+bool tryLoadImage(const std::string& path) {
     auto image = CImage(path);
 
     if (!image.success()) {
