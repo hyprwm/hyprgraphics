@@ -110,7 +110,6 @@ std::expected<cairo_surface_t*, std::string> BMP::createSurfaceFromBMP(const std
 
     cairo_format_t format    = CAIRO_FORMAT_ARGB32;
     int            stride    = cairo_format_stride_for_width(format, bitmapHeader.width);
-    // Good cast!
     unsigned char* imageData = (unsigned char*)malloc(static_cast<size_t>(bitmapHeader.height * stride));
 
     if (bitmapHeader.numberOfBitPerPixel == 24)
