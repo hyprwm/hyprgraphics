@@ -26,10 +26,6 @@ static double hueToRgb(double p, double q, double t) {
     return p;
 }
 
-Hyprgraphics::CColor::CColor() {
-    ;
-}
-
 Hyprgraphics::CColor::CColor(const SSRGB& rgb) : r(rgb.r), g(rgb.g), b(rgb.b) {
     ;
 }

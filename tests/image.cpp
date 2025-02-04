@@ -25,7 +25,6 @@ static bool tryLoadImage(const std::string& path) {
 
     std::string name = image.getMime();
     std::ranges::replace(name, '/', '_');
-    // No lint?
     return cairo_surface_write_to_png(image.cairoSurface()->cairo(), (TEST_DIR + "/" + name + ".png").c_str()) == CAIRO_STATUS_SUCCESS;
 }
 

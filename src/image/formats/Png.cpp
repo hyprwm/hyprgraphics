@@ -56,7 +56,7 @@ std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std
 
     if (!succeededDecode && ret == SPNG_EBUFSIZ) {
         // hack, but I don't know why decoded_image_size is sometimes wrong
-        // Because of the cast from unsigned int to unsigned long? and because of the realloc?
+        // Good cast! At least now it's explicit
         imageLength = static_cast<size_t>(ihdr.height * ihdr.width * 4) /* FIXME: this is wrong if we doing >32bpp!!!! */;
         imageData   = (uint8_t*)realloc(imageData, imageLength);
 

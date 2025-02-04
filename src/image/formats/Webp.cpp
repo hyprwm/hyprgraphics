@@ -47,7 +47,7 @@ std::expected<cairo_surface_t*, std::string> WEBP::createSurfaceFromWEBP(const s
     config.options.no_fancy_upsampling = 1;
     config.output.u.RGBA.rgba          = CAIRODATA;
     config.output.u.RGBA.stride        = CAIROSTRIDE;
-    // SHIT!
+    // Really good cast!
     config.output.u.RGBA.size          = static_cast<size_t>(CAIROSTRIDE * HEIGHT);
     config.output.is_external_memory   = 1;
     config.output.width                = WIDTH;
