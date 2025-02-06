@@ -52,6 +52,7 @@ pkg_check_modules(
 
 pkg_check_modules(
   JXL
+  IMPORTED_TARGET
   libjxl
   libjxl_cms
   libjxl_threads
@@ -70,7 +71,10 @@ target_include_directories(
   PRIVATE "./src")
 set_target_properties(hyprgraphics PROPERTIES VERSION ${HYPRGRAPHICS_VERSION}
                                               SOVERSION 0)
-target_link_libraries(hyprgraphics PkgConfig::deps ${JXL_LIBRARIES})
+target_link_libraries(hyprgraphics PkgConfig::deps)
+if(JXL_FOUND)
+  target_link_libraries(hyprgraphics PkgConfig::JXL)
+endif()
 
 # tests
 add_custom_target(tests)
