@@ -10,7 +10,7 @@ namespace Hyprgraphics {
       public:
         // create an image from a provided path.
         CImage(const std::string& path);
-        ~CImage();
+        ~CImage() = default;
 
         CImage(const CImage&)            = delete;
         CImage& operator=(const CImage&) = delete;

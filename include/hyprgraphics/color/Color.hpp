@@ -18,7 +18,7 @@ namespace Hyprgraphics {
             double l = 0, a = 0, b = 0;
         };
 
-        CColor(); // black
+        CColor() = default; // black
         CColor(const SSRGB& rgb);
         CColor(const SHSL& hsl);
         CColor(const SOkLab& lab);

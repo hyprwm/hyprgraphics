@@ -45,7 +45,7 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         magic_load(handle, nullptr);
 
         const auto type_str   = std::string(magic_file(handle, path.c_str()));
-        const auto first_word = type_str.substr(0, type_str.find(" "));
+        const auto first_word = type_str.substr(0, type_str.find(' '));
 
         if (first_word == "PNG") {
             CAIROSURFACE = PNG::createSurfaceFromPNG(path);
@@ -76,10 +76,6 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
 
     loadSuccess   = true;
     pCairoSurface = makeShared<CCairoSurface>(CAIROSURFACE.value());
-}
-
-Hyprgraphics::CImage::~CImage() {
-    ;
 }
 
 bool Hyprgraphics::CImage::success() {
