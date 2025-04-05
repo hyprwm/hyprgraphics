@@ -32,7 +32,8 @@ namespace Hyprgraphics {
         struct XYZ {
             double x = 0, y = 0, z = 0;
 
-            XYZ    operator/(const XYZ& other) const {
+            // per-component division
+            XYZ operator/(const XYZ& other) const {
                 return {x / other.x, y / other.y, z / other.z};
             }
         };
@@ -55,29 +56,27 @@ namespace Hyprgraphics {
         double r = 0, g = 0, b = 0;
     };
 
-    typedef std::array<double, 3> vec3;
-    typedef std::array<vec3, 3>   mat3;
-
+    // 3x3 matrix for CM transformations
     class CMatrix3 {
       public:
         CMatrix3() = default;
-        CMatrix3(const mat3& values);
+        CMatrix3(const std::array<std::array<double, 3>, 3>& values);
 
-        CMatrix3    invert();
-        CColor::XYZ operator*(const CColor::XYZ& xyz) const;
-        CMatrix3    operator*(const CMatrix3& other) const;
+        CMatrix3                                    invert();
+        CColor::XYZ                                 operator*(const CColor::XYZ& xyz) const;
+        CMatrix3                                    operator*(const CMatrix3& other) const;
 
-        const mat3& mat();
+        const std::array<std::array<double, 3>, 3>& mat();
 
       private:
-        mat3 m = {
+        std::array<std::array<double, 3>, 3> m = {
             0, 0, 0, //
             0, 0, 0, //
             0, 0, 0, //
         };
     };
 
-    const CMatrix3 Identity3 = CMatrix3(mat3{
+    const CMatrix3 Identity3 = CMatrix3(std::array<std::array<double, 3>, 3>{
         1, 0, 0, //
         0, 1, 0, //
         0, 0, 1, //
@@ -93,7 +92,7 @@ namespace Hyprgraphics {
             return red == p2.red && green == p2.green && blue == p2.blue && white == p2.white;
         }
 
-        CMatrix3 toXYZ() const;
-        CMatrix3 convertMatrix(const SPCPRimaries& dst) const;
+        CMatrix3 toXYZ() const;                                // toXYZ() * rgb -> xyz
+        CMatrix3 convertMatrix(const SPCPRimaries& dst) const; // convertMatrix(dst) * rgb with "this" primaries -> rgb with dst primaries
     };
 };

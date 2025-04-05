@@ -26,7 +26,7 @@ static double hueToRgb(double p, double q, double t) {
     return p;
 }
 
-Hyprgraphics::CMatrix3::CMatrix3(const mat3& values) : m(values) {}
+Hyprgraphics::CMatrix3::CMatrix3(const std::array<std::array<double, 3>, 3>& values) : m(values) {}
 
 CMatrix3 Hyprgraphics::CMatrix3::invert() {
     double invDet = 1 /
@@ -36,7 +36,7 @@ CMatrix3 Hyprgraphics::CMatrix3::invert() {
          + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]) //
         );
 
-    return CMatrix3(mat3{
+    return CMatrix3(std::array<std::array<double, 3>, 3>{
         (m[1][1] * m[2][2] - m[2][1] * m[1][2]) * invDet, (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * invDet, (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * invDet, //
         (m[1][2] * m[2][0] - m[1][0] * m[2][2]) * invDet, (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * invDet, (m[1][0] * m[0][2] - m[0][0] * m[1][2]) * invDet, //
         (m[1][0] * m[2][1] - m[2][0] * m[1][1]) * invDet, (m[2][0] * m[0][1] - m[0][0] * m[2][1]) * invDet, (m[0][0] * m[1][1] - m[1][0] * m[0][1]) * invDet, //
@@ -52,7 +52,7 @@ CColor::XYZ Hyprgraphics::CMatrix3::operator*(const CColor::XYZ& value) const {
 }
 
 CMatrix3 Hyprgraphics::CMatrix3::operator*(const CMatrix3& other) const {
-    mat3 res = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::array<std::array<double, 3>, 3> res = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             for (int k = 0; k < 3; k++) {
@@ -63,7 +63,7 @@ CMatrix3 Hyprgraphics::CMatrix3::operator*(const CMatrix3& other) const {
     return CMatrix3(res);
 }
 
-const mat3& Hyprgraphics::CMatrix3::mat() {
+const std::array<std::array<double, 3>, 3>& Hyprgraphics::CMatrix3::mat() {
     return m;
 };
 
@@ -74,7 +74,7 @@ CColor::XYZ Hyprgraphics::xy2xyz(const CColor::xy& xy) {
     return {xy.x / xy.y, 1.0, (1.0 - xy.x - xy.y) / xy.y};
 }
 
-CMatrix3 Bradford = CMatrix3(mat3{
+CMatrix3 Bradford = CMatrix3(std::array<std::array<double, 3>, 3>{
     0.8951, 0.2664, -0.1614, //
     -0.7502, 1.7135, 0.0367, //
     0.0389, -0.0685, 1.0296, //
@@ -91,7 +91,7 @@ CMatrix3 Hyprgraphics::adaptWhite(const CColor::xy& src, const CColor::xy& dst) 
     const auto factors = (Bradford * dstXYZ) / (Bradford * srcXYZ);
 
     return BradfordInv *
-        CMatrix3(mat3{
+        CMatrix3(std::array<std::array<double, 3>, 3>{
             factors.x, 0.0, 0.0, //
             0.0, factors.y, 0.0, //
             0.0, 0.0, factors.z, //
@@ -105,7 +105,7 @@ CMatrix3 Hyprgraphics::SPCPRimaries::toXYZ() const {
     const auto b = xy2xyz(blue);
     const auto w = xy2xyz(white);
 
-    const auto invMat = CMatrix3(mat3{
+    const auto invMat = CMatrix3(std::array<std::array<double, 3>, 3>{
                                      r.x, g.x, b.x, //
                                      r.y, g.y, b.y, //
                                      r.z, g.z, b.z, //
@@ -114,7 +114,7 @@ CMatrix3 Hyprgraphics::SPCPRimaries::toXYZ() const {
 
     const auto s = invMat * w;
 
-    return mat3{
+    return std::array<std::array<double, 3>, 3>{
         s.x * r.x, s.y * g.x, s.z * b.x, //
         s.x * r.y, s.y * g.y, s.z * b.y, //
         s.x * r.z, s.y * g.z, s.z * b.z, //
