@@ -62,11 +62,13 @@ namespace Hyprgraphics {
         CMatrix3() = default;
         CMatrix3(const std::array<std::array<double, 3>, 3>& values);
 
-        CMatrix3                                    invert();
+        CMatrix3                                    invert() const;
         CColor::XYZ                                 operator*(const CColor::XYZ& xyz) const;
         CMatrix3                                    operator*(const CMatrix3& other) const;
 
         const std::array<std::array<double, 3>, 3>& mat();
+
+        static const CMatrix3&                      identity();
 
       private:
         std::array<std::array<double, 3>, 3> m = {
@@ -76,14 +78,8 @@ namespace Hyprgraphics {
         };
     };
 
-    const CMatrix3 Identity3 = CMatrix3(std::array<std::array<double, 3>, 3>{
-        1, 0, 0, //
-        0, 1, 0, //
-        0, 0, 1, //
-    });
-
-    CColor::XYZ    xy2xyz(const CColor::xy& xy);
-    CMatrix3       adaptWhite(const CColor::xy& src, const CColor::xy& dst);
+    CColor::XYZ xy2xyz(const CColor::xy& xy);
+    CMatrix3    adaptWhite(const CColor::xy& src, const CColor::xy& dst);
 
     struct SPCPRimaries {
         CColor::xy red, green, blue, white;

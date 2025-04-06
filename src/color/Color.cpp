@@ -28,7 +28,7 @@ static double hueToRgb(double p, double q, double t) {
 
 Hyprgraphics::CMatrix3::CMatrix3(const std::array<std::array<double, 3>, 3>& values) : m(values) {}
 
-CMatrix3 Hyprgraphics::CMatrix3::invert() {
+CMatrix3 Hyprgraphics::CMatrix3::invert() const {
     double invDet = 1 /
         (0                                                   //
          + m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) //
@@ -67,6 +67,15 @@ const std::array<std::array<double, 3>, 3>& Hyprgraphics::CMatrix3::mat() {
     return m;
 };
 
+const CMatrix3& CMatrix3::identity() {
+    static const CMatrix3 Identity3 = CMatrix3(std::array<std::array<double, 3>, 3>{
+        1, 0, 0, //
+        0, 1, 0, //
+        0, 0, 1, //
+    });
+    return Identity3;
+}
+
 CColor::XYZ Hyprgraphics::xy2xyz(const CColor::xy& xy) {
     if (xy.y == 0.0)
         return {0.0, 0.0, 0.0};
@@ -84,7 +93,7 @@ CMatrix3 BradfordInv = Bradford.invert();
 
 CMatrix3 Hyprgraphics::adaptWhite(const CColor::xy& src, const CColor::xy& dst) {
     if (src == dst)
-        return Identity3;
+        return CMatrix3::identity();
 
     const auto srcXYZ  = xy2xyz(src);
     const auto dstXYZ  = xy2xyz(dst);
