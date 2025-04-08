@@ -34,7 +34,7 @@ namespace Hyprgraphics {
 
             // per-component division
             XYZ operator/(const XYZ& other) const {
-                return {x / other.x, y / other.y, z / other.z};
+                return {.x = x / other.x, .y = y / other.y, .z = z / other.z};
             }
         };
 
