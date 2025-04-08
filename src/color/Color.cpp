@@ -83,13 +83,13 @@ CColor::XYZ Hyprgraphics::xy2xyz(const CColor::xy& xy) {
     return {.x = xy.x / xy.y, .y = 1.0, .z = (1.0 - xy.x - xy.y) / xy.y};
 }
 
-CMatrix3 Bradford = CMatrix3(std::array<std::array<double, 3>, 3>{
+static CMatrix3 Bradford = CMatrix3(std::array<std::array<double, 3>, 3>{
     0.8951, 0.2664, -0.1614, //
     -0.7502, 1.7135, 0.0367, //
     0.0389, -0.0685, 1.0296, //
 });
 
-CMatrix3 BradfordInv = Bradford.invert();
+static CMatrix3 BradfordInv = Bradford.invert();
 
 CMatrix3 Hyprgraphics::adaptWhite(const CColor::xy& src, const CColor::xy& dst) {
     if (src == dst)
