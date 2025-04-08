@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstddef>
 #include <filesystem>
 #include <optional>
 #include <fstream>
@@ -75,9 +76,9 @@ static void reflectImage(unsigned char* image, uint32_t numberOfRows, int stride
     std::vector<unsigned char> temp;
     temp.resize(stride);
     while (rowStart < rowEnd) {
-        memcpy(&temp[0], &image[rowStart * stride], stride);
-        memcpy(&image[rowStart * stride], &image[rowEnd * stride], stride);
-        memcpy(&image[rowEnd * stride], &temp[0], stride);
+        memcpy(&temp[0], &image[static_cast<ptrdiff_t>(rowStart * stride)], stride);
+        memcpy(&image[static_cast<ptrdiff_t>(rowStart * stride)], &image[static_cast<ptrdiff_t>(rowEnd * stride)], stride);
+        memcpy(&image[static_cast<ptrdiff_t>(rowEnd * stride)], &temp[0], stride);
         rowStart++;
         rowEnd--;
     }
@@ -109,7 +110,7 @@ std::expected<cairo_surface_t*, std::string> BMP::createSurfaceFromBMP(const std
 
     cairo_format_t format    = CAIRO_FORMAT_ARGB32;
     int            stride    = cairo_format_stride_for_width(format, bitmapHeader.width);
-    unsigned char* imageData = (unsigned char*)malloc(bitmapHeader.height * stride);
+    unsigned char* imageData = (unsigned char*)malloc(static_cast<size_t>(bitmapHeader.height * stride));
 
     if (bitmapHeader.numberOfBitPerPixel == 24)
         convertRgbToArgb(bitmapImageStream, imageData, bitmapHeader.height * stride);

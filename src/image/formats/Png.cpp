@@ -1,5 +1,6 @@
 #include "Png.hpp"
 #include <spng.h>
+#include <cstddef>
 #include <vector>
 #include <fstream>
 #include <filesystem>
@@ -55,7 +56,7 @@ std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std
 
     if (!succeededDecode && ret == SPNG_EBUFSIZ) {
         // hack, but I don't know why decoded_image_size is sometimes wrong
-        imageLength = ihdr.height * ihdr.width * 4 /* FIXME: this is wrong if we doing >32bpp!!!! */;
+        imageLength = static_cast<size_t>(ihdr.height * ihdr.width * 4) /* FIXME: this is wrong if we doing >32bpp!!!! */;
         imageData   = (uint8_t*)realloc(imageData, imageLength);
 
         ret = spng_decode_image(ctx, imageData, imageLength, SPNG_FMT_RGBA8, 0);
