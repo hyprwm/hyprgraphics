@@ -30,7 +30,7 @@ std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std
 
     spng_set_png_buffer(ctx, PNGCONTENT.data(), PNGCONTENT.size());
 
-    spng_ihdr ihdr{0};
+    spng_ihdr ihdr{.width = 0};
     if (int ret = spng_get_ihdr(ctx, &ihdr); ret)
         return std::unexpected(std::string{"loading png: spng_get_ihdr failed: "} + spng_strerror(ret));
 

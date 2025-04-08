@@ -7,7 +7,7 @@
 #include <optional>
 #include <fstream>
 #include <vector>
-#include <string.h>
+#include <cstring>
 
 class BmpHeader {
   public:
@@ -34,7 +34,7 @@ class BmpHeader {
         file.seekg(0, std::ios::beg);
 
         file.read(reinterpret_cast<char*>(&format), sizeof(format));
-        if (!(format[0] == 66 && format[1] == 77))
+        if (format[0] != 66 || format[1] != 77)
             return "Unable to parse bitmap header: wrong bmp file type";
 
         file.read(reinterpret_cast<char*>(&sizeOfFile), sizeof(sizeOfFile));

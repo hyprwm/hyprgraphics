@@ -21,6 +21,16 @@ set(LIBDIR ${CMAKE_INSTALL_FULL_LIBDIR})
 configure_file(hyprgraphics.pc.in hyprgraphics.pc @ONLY)
 
 set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+# -Wno-missing-braces for clang, gcc only warn about this for C/ObjC
+add_compile_options(
+  -Wall
+  -Wextra
+  -Wpedantic
+  -Wno-unused-parameter
+  -Wno-unused-value
+  -Wno-missing-field-initializers
+  -Wno-missing-braces)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG)
   message(STATUS "Configuring hyprgraphics in Debug")

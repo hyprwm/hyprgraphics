@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <print>
 #include <format>
 #include <filesystem>
@@ -23,8 +24,9 @@ bool tryLoadImage(const std::string& path) {
         std::filesystem::create_directory(TEST_DIR);
 
     std::string name = image.getMime();
-    std::replace(name.begin(), name.end(), '/', '_');
+    std::ranges::replace(name, '/', '_');
 
+    //NOLINTNEXTLINE
     return cairo_surface_write_to_png(image.cairoSurface()->cairo(), (TEST_DIR + "/" + name + ".png").c_str()) == CAIRO_STATUS_SUCCESS;
 }
 
