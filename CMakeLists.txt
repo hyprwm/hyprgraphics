@@ -22,7 +22,7 @@ configure_file(hyprgraphics.pc.in hyprgraphics.pc @ONLY)
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
-# -Wno-missing-braces for clang, gcc only warn about this for C/ObjC
+# -Wno-missing-braces for clang
 add_compile_options(
   -Wall
   -Wextra
