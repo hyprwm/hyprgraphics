@@ -1,5 +1,6 @@
 #include "Jpeg.hpp"
 
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <vector>
@@ -47,7 +48,7 @@ std::expected<cairo_surface_t*, std::string> JPEG::createSurfaceFromJPEG(const s
     JSAMPROW   rowRead;
 
     while (decompressStruct.output_scanline < decompressStruct.output_height) {
-        const auto PROW = CAIRODATA + (decompressStruct.output_scanline * CAIROSTRIDE);
+        const auto PROW = CAIRODATA + (static_cast<size_t>(decompressStruct.output_scanline * CAIROSTRIDE));
         rowRead         = PROW;
         jpeg_read_scanlines(&decompressStruct, &rowRead, 1);
     }
