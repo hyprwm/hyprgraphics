@@ -76,9 +76,9 @@ static void reflectImage(unsigned char* image, uint32_t numberOfRows, int stride
     std::vector<unsigned char> temp;
     temp.resize(stride);
     while (rowStart < rowEnd) {
-        memcpy(&temp[0], &image[static_cast<ptrdiff_t>(rowStart * stride)], stride);
-        memcpy(&image[static_cast<ptrdiff_t>(rowStart * stride)], &image[static_cast<ptrdiff_t>(rowEnd * stride)], stride);
-        memcpy(&image[static_cast<ptrdiff_t>(rowEnd * stride)], &temp[0], stride);
+        memcpy(&temp[0], &image[static_cast<size_t>(rowStart * stride)], stride);
+        memcpy(&image[static_cast<size_t>(rowStart * stride)], &image[static_cast<size_t>(rowEnd * stride)], stride);
+        memcpy(&image[static_cast<size_t>(rowEnd * stride)], &temp[0], stride);
         rowStart++;
         rowEnd--;
     }
