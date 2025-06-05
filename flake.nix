@@ -39,7 +39,7 @@
         inputs.hyprutils.overlays.default
         (final: prev: {
           hyprgraphics = final.callPackage ./nix/default.nix {
-            stdenv = final.gcc14Stdenv;
+            stdenv = final.gcc15Stdenv;
             version = version + "+date=" + (mkDate (self.lastModifiedDate or "19700101")) + "_" + (self.shortRev or "dirty");
           };
           hyprgraphics-with-tests = final.hyprgraphics.override {doCheck = true;};
