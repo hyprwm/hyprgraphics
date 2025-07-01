@@ -12,6 +12,30 @@
 using namespace Hyprgraphics;
 using namespace Hyprutils::Memory;
 
+Hyprgraphics::CImage::CImage(const unsigned char* data, size_t size, ImageFormat format) {
+    std::expected<cairo_surface_t*, std::string> CAIROSURFACE;
+    if (format == ImageFormat::PNG) {
+        CAIROSURFACE = PNG::createSurfaceFromPNG(data, size);
+        mime         = "image/png";
+    } else {
+        lastError = "Currently only PNG images are supported for embedding";
+        return;
+    }
+
+    if (!CAIROSURFACE) {
+        lastError = CAIROSURFACE.error();
+        return;
+    }
+
+    if (const auto STATUS = cairo_surface_status(*CAIROSURFACE); STATUS != CAIRO_STATUS_SUCCESS) {
+        lastError = std::format("Could not create surface: {}", cairo_status_to_string(STATUS));
+        return;
+    }
+
+    loadSuccess   = true;
+    pCairoSurface = makeShared<CCairoSurface>(CAIROSURFACE.value());
+}
+
 Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
     std::expected<cairo_surface_t*, std::string> CAIROSURFACE;
     const auto                                   len = path.length();
