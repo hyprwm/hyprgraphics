@@ -11,7 +11,9 @@
 #include <hyprutils/utils/ScopeGuard.hpp>
 using namespace Hyprutils::Utils;
 
-std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std::string& path) {
+static std::expected<cairo_surface_t*, std::string> loadPNG(png_structp, png_infop);
+
+std::expected<cairo_surface_t*, std::string>        PNG::createSurfaceFromPNG(const std::string& path) {
     if (!std::filesystem::exists(path))
         return std::unexpected("loading png: file doesn't exist");
 
@@ -37,24 +39,23 @@ std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std
     return loadPNG(png, info);
 }
 
-struct MemoryReadState {
-    const unsigned char* data;
-    size_t               size;
-    size_t               offset;
+struct ReadState {
+    const std::span<uint8_t>& data;
+    size_t                    offset;
 };
 
 void custom_read_function(png_structp png, png_bytep data, png_size_t length) {
-    MemoryReadState* state = static_cast<MemoryReadState*>(png_get_io_ptr(png));
-    if (state->offset + length > state->size) {
+    ReadState* state = static_cast<ReadState*>(png_get_io_ptr(png));
+    if (state->offset + length > state->data.size()) {
         png_error(png, "read error");
         return;
     }
 
-    memcpy(data, state->data + state->offset, length);
+    memcpy(data, state->data.data() + state->offset, length);
     state->offset += length;
 }
 
-std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const unsigned char* data, size_t size) {
+std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std::span<uint8_t>& data) {
     png_structp png  = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
     png_infop   info = png_create_info_struct(png);
     if (!png || !info)
@@ -65,10 +66,7 @@ std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const uns
     if (setjmp(png_jmpbuf(png)))
         return std::unexpected("loading png: couldn't setjmp");
 
-    MemoryReadState readState;
-    readState.data   = reinterpret_cast<const unsigned char*>(data);
-    readState.size   = size;
-    readState.offset = 0;
+    ReadState readState = {data, 0};
 
     png_set_read_fn(png, &readState, custom_read_function);
     png_set_sig_bytes(png, 0);

@@ -4,10 +4,9 @@
 #include <string>
 #include <expected>
 #include <png.h>
+#include <span>
 
 namespace PNG {
     std::expected<cairo_surface_t*, std::string> createSurfaceFromPNG(const std::string&);
-    std::expected<cairo_surface_t*, std::string> createSurfaceFromPNG(const unsigned char*, size_t);
+    std::expected<cairo_surface_t*, std::string> createSurfaceFromPNG(const std::span<u_int8_t>&);
 };
-
-static std::expected<cairo_surface_t*, std::string> loadPNG(png_structp, png_infop);
