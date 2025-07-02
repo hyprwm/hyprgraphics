@@ -56,11 +56,13 @@ static bool tryLoadImageFromBuffer(const std::span<uint8_t>& data) {
 }
 
 std::vector<uint8_t> getImageBuffer(const std::string& path) {
-    std::ifstream   file("./resource/images/hyprland.png", std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
+    std::vector<uint8_t> buffer;
+
+    std::ifstream        file("./resource/images/hyprland.png", std::ios::binary | std::ios::ate);
+    std::streamsize      size = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    std::vector<uint8_t> buffer(size);
+    buffer.resize(size);
 
     file.read(reinterpret_cast<char*>(buffer.data()), size);
 
