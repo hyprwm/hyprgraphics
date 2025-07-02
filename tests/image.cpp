@@ -2,9 +2,10 @@
 #include <print>
 #include <format>
 #include <filesystem>
+#include <fstream>
+#include <vector>
 #include <hyprgraphics/image/Image.hpp>
 #include "shared.hpp"
-#include "resource/images/hyprland_png.hpp"
 
 using namespace Hyprgraphics;
 
@@ -54,6 +55,18 @@ static bool tryLoadImageFromBuffer(const std::span<uint8_t>& data) {
     return cairo_surface_write_to_png(image.cairoSurface()->cairo(), (TEST_DIR + "/" + name + ".png").c_str()) == CAIRO_STATUS_SUCCESS;
 }
 
+std::vector<uint8_t> getImageBuffer(const std::string& path) {
+    std::ifstream   file("./resource/images/hyprland.png", std::ios::binary | std::ios::ate);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::vector<uint8_t> buffer(size);
+
+    file.read(reinterpret_cast<char*>(buffer.data()), size);
+
+    return buffer;
+}
+
 int main(int argc, char** argv, char** envp) {
     int ret = 0;
 
@@ -68,7 +81,8 @@ int main(int argc, char** argv, char** envp) {
         EXPECT(tryLoadImageFromFile(file.path()), expectation);
     }
 
-    EXPECT(tryLoadImageFromBuffer(hyprland_png), true);
+    auto buffer = getImageBuffer("./resource/images/hyprland.png");
+    EXPECT(tryLoadImageFromBuffer(buffer), true);
 
     return ret;
 }
