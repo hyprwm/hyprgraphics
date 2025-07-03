@@ -73,7 +73,7 @@ int main(int argc, char** argv, char** envp) {
     int ret = 0;
 
     for (auto& file : std::filesystem::directory_iterator("./resource/images/")) {
-        if (!file.is_regular_file() || file.path().extension() == ".hpp")
+        if (!file.is_regular_file())
             continue;
         auto expectation = true;
 #ifndef JXL_FOUND
