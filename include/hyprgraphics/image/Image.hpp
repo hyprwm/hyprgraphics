@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <span>
 #include <cairo/cairo.h>
 #include "../cairo/CairoSurface.hpp"
 #include <hyprutils/memory/SharedPtr.hpp>
