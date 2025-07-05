@@ -55,7 +55,7 @@ static bool tryLoadImageFromBuffer(const std::span<uint8_t>& data) {
     return cairo_surface_write_to_png(image.cairoSurface()->cairo(), (TEST_DIR + "/" + name + ".png").c_str()) == CAIRO_STATUS_SUCCESS;
 }
 
-std::vector<uint8_t> getImageBuffer(const std::string& path) {
+static std::vector<uint8_t> getImageBuffer(const std::string& path) {
     std::vector<uint8_t> buffer;
 
     std::ifstream        file("./resource/images/hyprland.png", std::ios::binary | std::ios::ate);
