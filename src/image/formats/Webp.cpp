@@ -17,6 +17,9 @@ std::expected<cairo_surface_t*, std::string> WEBP::createSurfaceFromWEBP(const s
     file.seekg(0);
     file.read(reinterpret_cast<char*>(bytes.data()), bytes.size());
 
+    if (bytes[0] != 'R' || bytes[1] != 'I' || bytes[2] != 'F' || bytes[3] != 'F')
+        return std::unexpected("loading webp: invalid magic bytes");
+
     // now the WebP is in the memory
 
     WebPDecoderConfig config;

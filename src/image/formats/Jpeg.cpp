@@ -19,6 +19,9 @@ std::expected<cairo_surface_t*, std::string> JPEG::createSurfaceFromJPEG(const s
     file.seekg(0);
     file.read(reinterpret_cast<char*>(bytes.data()), bytes.size());
 
+    if (bytes[0] != 0xFF || bytes[1] != 0xD8)
+        return std::unexpected("loading jpeg: invalid magic bytes");
+
     // now the JPEG is in the memory
 
     jpeg_decompress_struct decompressStruct = {};
