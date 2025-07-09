@@ -74,10 +74,18 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         if (first_word == "PNG") {
             CAIROSURFACE = PNG::createSurfaceFromPNG(path);
             mime         = "image/png";
-        } else if (first_word == "JPEG") {
+        } else if (first_word == "JPEG" && !type_str.contains("XL") && !type_str.contains("2000") {
             CAIROSURFACE  = JPEG::createSurfaceFromJPEG(path);
             imageHasAlpha = false;
             mime          = "image/jpeg";
+        } else if (first_word == "JPEG" && type_str.contains("XL")) {
+#ifdef JXL_FOUND
+            CAIROSURFACE = JXL::createSurfaceFromJXL(path);
+            mime         = "image/jxl";
+#else
+            lastError = "hyprgraphics compiled without JXL support";
+            return;
+#endif
         } else if (first_word == "BMP") {
             CAIROSURFACE  = BMP::createSurfaceFromBMP(path);
             imageHasAlpha = false;
