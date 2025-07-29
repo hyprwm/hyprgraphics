@@ -1,6 +1,6 @@
 # hyprgraphics
 
-Hyprgraphics is a small C++ library with graphics / resource related utilities used across the hypr* ecosystem.
+Hyprgraphics is a small C++ library with graphics / resource related utilities used across the [hypr* ecosystem](https://hypr.land/), i.e. a programming enviroment to benefit from all the latest features brought by the X11-successor [Wayland](https://wayland.freedesktop.org/) with loads of eyecandy while remaining light-weight.
 
 ## Stability
 
