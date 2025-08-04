@@ -20,7 +20,7 @@ Dep list:
  - libjxl_cms [optional]
  - libjxl_threads [optional]
  - libmagic
- - libspng
+ - libpng
 
 ## Building
 
