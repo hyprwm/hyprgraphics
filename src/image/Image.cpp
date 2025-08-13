@@ -4,6 +4,9 @@
 #ifdef JXL_FOUND
 #include "formats/JpegXL.hpp"
 #endif
+#ifdef HEIF_FOUND
+#include "formats/Avif.hpp"
+#endif
 #include "formats/Webp.hpp"
 #include "formats/Png.hpp"
 #include <magic.h>
