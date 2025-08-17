@@ -80,6 +80,10 @@ int main(int argc, char** argv, char** envp) {
         if (file.path().filename() == "hyprland.jxl")
             expectation = false;
 #endif
+#ifndef HEIF_FOUND
+        if (file.path().filename() == "hyprland.avif")
+            expectation = false;
+#endif
         EXPECT(tryLoadImageFromFile(file.path()), expectation);
     }
 

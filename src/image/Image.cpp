@@ -66,12 +66,25 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         return;
 #endif
 
+    } else if (path.find(".avif") == len-5 || path.find(".AVIF") == len-5) {
+
+#ifdef HEIF_FOUND
+        CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
+        mime         = "image/avif";
+#else
+        lastError = "hyprgraphics compiled without HEIF support";
+        return;
+#endif
+
     } else {
         // magic is slow, so only use it when no recognized extension is found
         auto handle = magic_open(MAGIC_NONE | MAGIC_COMPRESS | MAGIC_SYMLINK);
         magic_load(handle, nullptr);
 
         const auto type_str   = std::string(magic_file(handle, path.c_str()));
+
+        magic_close(handle);
+
         const auto first_word = type_str.substr(0, type_str.find(' '));
 
         if (first_word == "PNG") {
@@ -87,6 +100,14 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
             mime         = "image/jxl";
 #else
             lastError = "hyprgraphics compiled without JXL support";
+            return;
+#endif
+        } else if (type_str.contains("AVIF")) { // libmagic can identify AVIF images as "ISO Media, AVIF Image"
+#ifdef HEIF_FOUND
+            CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
+            mime         = "image/avif";
+#else
+            lastError = "hyprgraphics compiled without AVIF support";
             return;
 #endif
         } else if (first_word == "BMP") {
