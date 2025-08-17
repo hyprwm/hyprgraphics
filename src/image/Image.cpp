@@ -20,8 +20,11 @@ Hyprgraphics::CImage::CImage(const std::span<uint8_t>& data, eImageFormat format
     if (format == eImageFormat::IMAGE_FORMAT_PNG) {
         CAIROSURFACE = PNG::createSurfaceFromPNG(data);
         mime         = "image/png";
+    } else if (format == eImageFormat::IMAGE_FORMAT_AVIF) {
+        CAIROSURFACE = AVIF::createSurfaceFromAvif(data);
+        mime         = "image/avif";
     } else {
-        lastError = "Currently only PNG images are supported for embedding";
+        lastError = "Currently only PNG and AVIF images are supported for embedding";
         return;
     }
 
