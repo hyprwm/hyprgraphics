@@ -69,9 +69,8 @@ std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const s
 	heif_context* ctx = heif_context_alloc();
 	struct heif_error err = heif_context_read_from_file(ctx, path.c_str(), nullptr);
 
-	if(err.code != heif_error_Ok) {
+	if(err.code != heif_error_Ok)
 		return std::unexpected("loading avif: failed to load from file");
-	}
 
 	auto result = loadFromContext(ctx);
 	heif_context_free(ctx);
@@ -82,9 +81,8 @@ std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const s
 	heif_context* ctx = heif_context_alloc();
 	struct heif_error err = heif_context_read_from_memory(ctx, buf.data(), buf.size(), nullptr);
 
-	if(err.code != heif_error_Ok) {
+	if(err.code != heif_error_Ok)
 		return std::unexpected("loading avif: failed to load from memory");
-	}
 
 	auto result = loadFromContext(ctx);
 	heif_context_free(ctx);
