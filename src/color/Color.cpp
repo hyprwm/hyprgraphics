@@ -91,7 +91,7 @@ static CMatrix3 Bradford = CMatrix3(std::array<std::array<double, 3>, 3>{
 
 static CMatrix3 BradfordInv = Bradford.invert();
 
-CMatrix3 Hyprgraphics::adaptWhite(const CColor::xy& src, const CColor::xy& dst) {
+CMatrix3        Hyprgraphics::adaptWhite(const CColor::xy& src, const CColor::xy& dst) {
     if (src == dst)
         return CMatrix3::identity();
 
