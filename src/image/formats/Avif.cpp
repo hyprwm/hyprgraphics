@@ -13,12 +13,22 @@ static std::expected<cairo_surface_t*, std::string> loadFromContext(heif_context
 	heif_context_get_primary_image_handle(ctx, &handle);
 
 	heif_image* img;
-	heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, nullptr);
+	struct heif_error err = heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, nullptr);
+
+	if(err.code != heif_error_Ok)
+		return std::unexpected("loading avif: failed to decode image");
 
 	size_t width = heif_image_get_width(img, heif_channel_interleaved);
 	size_t height = heif_image_get_height(img, heif_channel_interleaved);
+
+	if(width == static_cast<size_t>(-1) || height == static_cast<size_t>(-1))
+		return std::unexpected("loading avif: failed to get width or height");
+
 	int stride;
 	const uint8_t* data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+
+	if(!data)
+		return std::unexpected("loading avif: get_plane_readonly failed");
 
 	std::vector<uint8_t> rawData;
 	rawData.resize(width * height * 4);
@@ -57,7 +67,11 @@ std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const s
 			return std::unexpected("loading avif: file doesn't exist");
 
 	heif_context* ctx = heif_context_alloc();
-	heif_context_read_from_file(ctx, path.c_str(), nullptr);
+	struct heif_error err = heif_context_read_from_file(ctx, path.c_str(), nullptr);
+
+	if(err.code != heif_error_Ok) {
+		return std::unexpected("loading avif: failed to load from file");
+	}
 
 	auto result = loadFromContext(ctx);
 	heif_context_free(ctx);
@@ -66,7 +80,11 @@ std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const s
 }
 std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const std::span<uint8_t>& buf) {
 	heif_context* ctx = heif_context_alloc();
-	heif_context_read_from_memory(ctx, buf.data(), buf.size(), nullptr);
+	struct heif_error err = heif_context_read_from_memory(ctx, buf.data(), buf.size(), nullptr);
+
+	if(err.code != heif_error_Ok) {
+		return std::unexpected("loading avif: failed to load from memory");
+	}
 
 	auto result = loadFromContext(ctx);
 	heif_context_free(ctx);
