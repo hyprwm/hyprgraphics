@@ -66,7 +66,7 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         return;
 #endif
 
-    } else if (path.find(".avif") == len-5 || path.find(".AVIF") == len-5) {
+    } else if (path.find(".avif") == len - 5 || path.find(".AVIF") == len - 5) {
 
 #ifdef HEIF_FOUND
         CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
@@ -81,7 +81,7 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         auto handle = magic_open(MAGIC_NONE | MAGIC_COMPRESS | MAGIC_SYMLINK);
         magic_load(handle, nullptr);
 
-        const auto type_str   = std::string(magic_file(handle, path.c_str()));
+        const auto type_str = std::string(magic_file(handle, path.c_str()));
 
         magic_close(handle);
 
