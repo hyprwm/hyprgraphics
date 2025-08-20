@@ -8,7 +8,8 @@
 
 namespace Hyprgraphics {
     enum eImageFormat {
-        IMAGE_FORMAT_PNG
+        IMAGE_FORMAT_PNG,
+        IMAGE_FORMAT_AVIF,
     };
 
     class CImage {

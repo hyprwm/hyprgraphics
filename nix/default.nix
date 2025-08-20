@@ -7,6 +7,7 @@
   cairo,
   file,
   hyprutils,
+  libheif,
   libjpeg,
   libjxl,
   libspng,
@@ -49,6 +50,7 @@ in
       cairo
       file
       hyprutils
+      libheif
       libjpeg
       libjxl
       libspng

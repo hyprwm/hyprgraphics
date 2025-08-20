@@ -32,8 +32,8 @@ static bool tryLoadImageFromFile(const std::string& path) {
     return cairo_surface_write_to_png(image.cairoSurface()->cairo(), (TEST_DIR + "/" + name + ".png").c_str()) == CAIRO_STATUS_SUCCESS;
 }
 
-static bool tryLoadImageFromBuffer(const std::span<uint8_t>& data) {
-    auto image = CImage(data, IMAGE_FORMAT_PNG);
+static bool tryLoadImageFromBuffer(const std::span<uint8_t>& data, eImageFormat format) {
+    auto image = CImage(data, format);
 
     if (!image.success()) {
         std::println("Failed to load embedded image: {}", image.getError());
@@ -58,7 +58,7 @@ static bool tryLoadImageFromBuffer(const std::span<uint8_t>& data) {
 static std::vector<uint8_t> getImageBuffer(const std::string& path) {
     std::vector<uint8_t> buffer;
 
-    std::ifstream        file("./resource/images/hyprland.png", std::ios::binary | std::ios::ate);
+    std::ifstream        file(path, std::ios::binary | std::ios::ate);
     std::streamsize      size = file.tellg();
     file.seekg(0, std::ios::beg);
 
@@ -80,11 +80,20 @@ int main(int argc, char** argv, char** envp) {
         if (file.path().filename() == "hyprland.jxl")
             expectation = false;
 #endif
+#ifndef HEIF_FOUND
+        if (file.path().filename() == "hyprland.avif")
+            expectation = false;
+#endif
         EXPECT(tryLoadImageFromFile(file.path()), expectation);
     }
 
-    auto buffer = getImageBuffer("./resource/images/hyprland.png");
-    EXPECT(tryLoadImageFromBuffer(buffer), true);
+    auto pngBuffer = getImageBuffer("./resource/images/hyprland.png");
+    EXPECT(tryLoadImageFromBuffer(pngBuffer, Hyprgraphics::IMAGE_FORMAT_PNG), true);
+
+#ifdef HEIF_FOUND
+    auto avifBuffer = getImageBuffer("./resource/images/hyprland.avif");
+    EXPECT(tryLoadImageFromBuffer(avifBuffer, Hyprgraphics::IMAGE_FORMAT_AVIF), true);
+#endif
 
     return ret;
 }

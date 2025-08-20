@@ -4,6 +4,9 @@
 #ifdef JXL_FOUND
 #include "formats/JpegXL.hpp"
 #endif
+#ifdef HEIF_FOUND
+#include "formats/Avif.hpp"
+#endif
 #include "formats/Webp.hpp"
 #include "formats/Png.hpp"
 #include <magic.h>
@@ -17,8 +20,16 @@ Hyprgraphics::CImage::CImage(const std::span<uint8_t>& data, eImageFormat format
     if (format == eImageFormat::IMAGE_FORMAT_PNG) {
         CAIROSURFACE = PNG::createSurfaceFromPNG(data);
         mime         = "image/png";
+    } else if (format == eImageFormat::IMAGE_FORMAT_AVIF) {
+#ifndef HEIF_FOUND
+        lastError = "hyprgraphics compiled without HEIF support";
+        return;
+#else 
+        CAIROSURFACE = AVIF::createSurfaceFromAvif(data);
+        mime         = "image/avif";
+#endif
     } else {
-        lastError = "Currently only PNG images are supported for embedding";
+        lastError = "Currently only PNG and AVIF images are supported for embedding";
         return;
     }
 
@@ -63,12 +74,25 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         return;
 #endif
 
+    } else if (path.find(".avif") == len - 5 || path.find(".AVIF") == len - 5) {
+
+#ifdef HEIF_FOUND
+        CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
+        mime         = "image/avif";
+#else
+        lastError = "hyprgraphics compiled without HEIF support";
+        return;
+#endif
+
     } else {
         // magic is slow, so only use it when no recognized extension is found
         auto handle = magic_open(MAGIC_NONE | MAGIC_COMPRESS | MAGIC_SYMLINK);
         magic_load(handle, nullptr);
 
-        const auto type_str   = std::string(magic_file(handle, path.c_str()));
+        const auto type_str = std::string(magic_file(handle, path.c_str()));
+
+        magic_close(handle);
+
         const auto first_word = type_str.substr(0, type_str.find(' '));
 
         if (first_word == "PNG") {
@@ -84,6 +108,14 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
             mime         = "image/jxl";
 #else
             lastError = "hyprgraphics compiled without JXL support";
+            return;
+#endif
+        } else if (type_str.contains("AVIF")) { // libmagic can identify AVIF images as "ISO Media, AVIF Image"
+#ifdef HEIF_FOUND
+            CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
+            mime         = "image/avif";
+#else
+            lastError = "hyprgraphics compiled without AVIF support";
             return;
 #endif
         } else if (first_word == "BMP") {

@@ -74,6 +74,19 @@ else()
   add_compile_definitions(JXL_FOUND)
 endif()
 
+pkg_check_modules(
+  HEIF
+  IMPORTED_TARGET
+  libheif
+)
+
+if(NOT HEIF_FOUND)
+  file(GLOB_RECURSE HEIFFILES CONFIGURE_DEPENDS "src/*Avif.cpp")
+  list(REMOVE_ITEM SRCFILES ${HEIFFILES})
+else()
+  add_compile_definitions(HEIF_FOUND)
+endif()
+
 add_library(hyprgraphics SHARED ${SRCFILES})
 target_include_directories(
   hyprgraphics
@@ -84,6 +97,10 @@ set_target_properties(hyprgraphics PROPERTIES VERSION ${HYPRGRAPHICS_VERSION}
 target_link_libraries(hyprgraphics PkgConfig::deps)
 if(JXL_FOUND)
   target_link_libraries(hyprgraphics PkgConfig::JXL)
+endif()
+
+if(HEIF_FOUND)
+  target_link_libraries(hyprgraphics PkgConfig::HEIF)
 endif()
 
 # tests
