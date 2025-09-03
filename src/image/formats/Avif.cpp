@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <hyprutils/utils/ScopeGuard.hpp>
 #include <libheif/heif.h>
+#include <vector>
 using namespace Hyprutils::Utils;
 
 static std::expected<cairo_surface_t*, std::string> loadFromContext(heif_context* ctx) {
