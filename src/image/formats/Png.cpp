@@ -86,13 +86,13 @@ static std::expected<cairo_surface_t*, std::string> loadPNG(png_structp png, png
         png_set_palette_to_rgb(png);
     if (COLOR_TYPE == PNG_COLOR_TYPE_GRAY && BPP < 8)
         png_set_expand_gray_1_2_4_to_8(png);
+    if (COLOR_TYPE == PNG_COLOR_TYPE_GRAY || COLOR_TYPE == PNG_COLOR_TYPE_GRAY_ALPHA)
+        png_set_gray_to_rgb(png);
     if (png_get_valid(png, info, PNG_INFO_tRNS))
         png_set_tRNS_to_alpha(png);
 
     if (COLOR_TYPE == PNG_COLOR_TYPE_RGB || COLOR_TYPE == PNG_COLOR_TYPE_GRAY || COLOR_TYPE == PNG_COLOR_TYPE_PALETTE)
         png_set_filler(png, 0xFF, PNG_FILLER_AFTER);
-    else if (COLOR_TYPE == PNG_COLOR_TYPE_GRAY_ALPHA)
-        png_set_gray_to_rgb(png);
 
     png_read_update_info(png, info);
 
