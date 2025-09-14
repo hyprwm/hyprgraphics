@@ -12,6 +12,7 @@
   libjxl,
   libspng,
   libwebp,
+  pango,
   pixman,
   version ? "git",
   doCheck ? false,
@@ -55,6 +56,7 @@ in
       libjxl
       libspng
       libwebp
+      pango
       pixman
     ];
 
