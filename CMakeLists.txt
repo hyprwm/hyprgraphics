@@ -54,6 +54,7 @@ pkg_check_modules(
   IMPORTED_TARGET
   pixman-1
   cairo
+  pangocairo
   hyprutils
   libjpeg
   libwebp
@@ -113,6 +114,13 @@ add_test(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests
   COMMAND hyprgraphics_image "image")
 add_dependencies(tests hyprgraphics_image)
+add_executable(hyprgraphics_arg "tests/arg.cpp")
+target_link_libraries(hyprgraphics_arg PRIVATE hyprgraphics PkgConfig::deps)
+add_test(
+  NAME "ARG"
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests
+  COMMAND hyprgraphics_arg "image")
+add_dependencies(tests hyprgraphics_arg)
 
 # Installation
 install(TARGETS hyprgraphics)
