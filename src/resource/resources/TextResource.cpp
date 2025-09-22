@@ -74,6 +74,8 @@ void CTextResource::render() {
             pango_layout_set_height(layout, layoutHeight);
         if (m_data.wrap)
             pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
+
+        pango_layout_get_size(layout, &layoutWidth, &layoutHeight);
     }
 
     // TODO: avoid this?
