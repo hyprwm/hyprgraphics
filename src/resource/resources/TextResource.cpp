@@ -66,13 +66,14 @@ void CTextResource::render() {
     if (m_data.maxSize) {
         layoutWidth  = m_data.maxSize->x > 0 ? std::min(layoutWidth, sc<int>(m_data.maxSize->x * PANGO_SCALE)) : layoutWidth;
         layoutHeight = m_data.maxSize->y > 0 ? std::min(layoutHeight, sc<int>(m_data.maxSize->y * PANGO_SCALE)) : layoutHeight;
-        pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END);
+        if (m_data.ellipsize)
+            pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END);
         if (m_data.maxSize->x >= 0)
             pango_layout_set_width(layout, layoutWidth);
         if (m_data.maxSize->y >= 0)
             pango_layout_set_height(layout, layoutHeight);
-
-        pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
+        if (m_data.wrap)
+            pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
     }
 
     // TODO: avoid this?

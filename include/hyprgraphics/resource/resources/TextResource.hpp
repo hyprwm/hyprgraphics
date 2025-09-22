@@ -27,6 +27,8 @@ namespace Hyprgraphics {
             std::optional<Hyprutils::Math::Vector2D> maxSize   = std::nullopt;
             cairo_antialias_t                        antialias = CAIRO_ANTIALIAS_GOOD;
             cairo_hint_style_t                       hintStyle = CAIRO_HINT_STYLE_SLIGHT;
+            bool                                     ellipsize = false;
+            bool                                     wrap      = true;
         };
 
         CTextResource(STextResourceData&& data);
