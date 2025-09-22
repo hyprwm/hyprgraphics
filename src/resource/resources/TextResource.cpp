@@ -24,7 +24,8 @@ void CTextResource::render() {
     pango_font_description_free(fontDesc);
 
     cairo_font_options_t* options = cairo_font_options_create();
-    cairo_font_options_set_antialias(options, CAIRO_ANTIALIAS_GOOD);
+    cairo_font_options_set_antialias(options, m_data.antialias);
+    cairo_font_options_set_hint_style(options, m_data.hintStyle);
     pango_cairo_context_set_font_options(pango_layout_get_context(layout), options);
     cairo_font_options_destroy(options);
 

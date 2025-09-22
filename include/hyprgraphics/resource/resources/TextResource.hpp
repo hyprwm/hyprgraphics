@@ -3,6 +3,8 @@
 #include "AsyncResource.hpp"
 #include "../../color/Color.hpp"
 
+#include <cairo/cairo.h>
+
 #include <optional>
 
 #include <hyprutils/math/Vector2D.hpp>
@@ -17,12 +19,14 @@ namespace Hyprgraphics {
         };
 
         struct STextResourceData {
-            std::string                              text     = "Sample Text";
-            std::string                              font     = "Sans Serif";
-            size_t                                   fontSize = 16;
-            CColor                                   color    = CColor{CColor::SSRGB{.r = 1.F, .g = 1.F, .b = 1.F}};
-            eTextAlignmentMode                       align    = TEXT_ALIGN_LEFT;
-            std::optional<Hyprutils::Math::Vector2D> maxSize  = std::nullopt;
+            std::string                              text      = "Sample Text";
+            std::string                              font      = "Sans Serif";
+            size_t                                   fontSize  = 16;
+            CColor                                   color     = CColor{CColor::SSRGB{.r = 1.F, .g = 1.F, .b = 1.F}};
+            eTextAlignmentMode                       align     = TEXT_ALIGN_LEFT;
+            std::optional<Hyprutils::Math::Vector2D> maxSize   = std::nullopt;
+            cairo_antialias_t                        antialias = CAIRO_ANTIALIAS_GOOD;
+            cairo_hint_style_t                       hintStyle = CAIRO_HINT_STYLE_SLIGHT;
         };
 
         CTextResource(STextResourceData&& data);

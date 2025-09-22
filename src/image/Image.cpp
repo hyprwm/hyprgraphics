@@ -24,7 +24,7 @@ Hyprgraphics::CImage::CImage(const std::span<uint8_t>& data, eImageFormat format
 #ifndef HEIF_FOUND
         lastError = "hyprgraphics compiled without HEIF support";
         return;
-#else 
+#else
         CAIROSURFACE = AVIF::createSurfaceFromAvif(data);
         mime         = "image/avif";
 #endif
