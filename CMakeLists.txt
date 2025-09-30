@@ -59,7 +59,8 @@ pkg_check_modules(
   libjpeg
   libwebp
   libmagic
-  libpng)
+  libpng
+  librsvg-2.0)
 
 pkg_check_modules(
   JXL

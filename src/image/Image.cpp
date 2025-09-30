@@ -9,11 +9,13 @@
 #endif
 #include "formats/Webp.hpp"
 #include "formats/Png.hpp"
+#include "formats/Svg.hpp"
 #include <magic.h>
 #include <format>
 
 using namespace Hyprgraphics;
 using namespace Hyprutils::Memory;
+using namespace Hyprutils::Math;
 
 Hyprgraphics::CImage::CImage(const std::span<uint8_t>& data, eImageFormat format) {
     std::expected<cairo_surface_t*, std::string> CAIROSURFACE;
@@ -47,24 +49,26 @@ Hyprgraphics::CImage::CImage(const std::span<uint8_t>& data, eImageFormat format
     pCairoSurface = makeShared<CCairoSurface>(CAIROSURFACE.value());
 }
 
-Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
+Hyprgraphics::CImage::CImage(const std::string& path, const Vector2D& size) : filepath(path), m_svgSize(size) {
     std::expected<cairo_surface_t*, std::string> CAIROSURFACE;
-    const auto                                   len = path.length();
-    if (path.find(".png") == len - 4 || path.find(".PNG") == len - 4) {
+    if (path.ends_with(".png") || path.ends_with(".PNG")) {
         CAIROSURFACE = PNG::createSurfaceFromPNG(path);
         mime         = "image/png";
-    } else if (path.find(".jpg") == len - 4 || path.find(".JPG") == len - 4 || path.find(".jpeg") == len - 5 || path.find(".JPEG") == len - 5) {
+    } else if (path.ends_with(".jpg") || path.ends_with(".JPG") || path.ends_with(".jpeg") || path.ends_with(".JPEG")) {
         CAIROSURFACE  = JPEG::createSurfaceFromJPEG(path);
         imageHasAlpha = false;
         mime          = "image/jpeg";
-    } else if (path.find(".bmp") == len - 4 || path.find(".BMP") == len - 4) {
+    } else if (path.ends_with(".bmp") || path.ends_with(".BMP")) {
         CAIROSURFACE  = BMP::createSurfaceFromBMP(path);
         imageHasAlpha = false;
         mime          = "image/bmp";
-    } else if (path.find(".webp") == len - 5 || path.find(".WEBP") == len - 5) {
+    } else if (path.ends_with(".webp") || path.ends_with(".WEBP")) {
         CAIROSURFACE = WEBP::createSurfaceFromWEBP(path);
         mime         = "image/webp";
-    } else if (path.find(".jxl") == len - 4 || path.find(".JXL") == len - 4) {
+    } else if (path.ends_with(".svg") || path.ends_with(".SVG")) {
+        CAIROSURFACE = SVG::createSurfaceFromSVG(path, m_svgSize);
+        mime         = "image/svg";
+    } else if (path.ends_with(".jxl") || path.ends_with(".JXL")) {
 
 #ifdef JXL_FOUND
         CAIROSURFACE = JXL::createSurfaceFromJXL(path);
@@ -74,7 +78,7 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
         return;
 #endif
 
-    } else if (path.find(".avif") == len - 5 || path.find(".AVIF") == len - 5) {
+    } else if (path.ends_with(".avif") || path.ends_with(".AVIF")) {
 
 #ifdef HEIF_FOUND
         CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
@@ -122,6 +126,10 @@ Hyprgraphics::CImage::CImage(const std::string& path) : filepath(path) {
             CAIROSURFACE  = BMP::createSurfaceFromBMP(path);
             imageHasAlpha = false;
             mime          = "image/bmp";
+        } else if (first_word == "SVG") {
+            CAIROSURFACE  = SVG::createSurfaceFromSVG(path, m_svgSize);
+            imageHasAlpha = false;
+            mime          = "image/svg";
         } else {
             lastError = "unrecognized image";
             return;

@@ -21,6 +21,7 @@ Dep list:
  - libjxl_threads [optional]
  - libmagic
  - libpng
+ - librsvg2
 
 ## Building
 

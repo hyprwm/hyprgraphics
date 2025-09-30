@@ -10,7 +10,7 @@
 using namespace Hyprgraphics;
 
 static bool tryLoadImageFromFile(const std::string& path) {
-    auto image = CImage(path);
+    auto image = path.ends_with("svg") ? CImage(path, {512, 512}) : CImage(path);
 
     if (!image.success()) {
         std::println("Failed to load {}: {}", path, image.getError());

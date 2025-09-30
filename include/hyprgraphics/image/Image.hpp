@@ -7,14 +7,14 @@
 #include <hyprutils/memory/SharedPtr.hpp>
 
 namespace Hyprgraphics {
-    enum eImageFormat {
+    enum eImageFormat : uint8_t {
         IMAGE_FORMAT_PNG,
         IMAGE_FORMAT_AVIF,
     };
 
     class CImage {
       public:
-        CImage(const std::string& path);
+        CImage(const std::string& path, const Hyprutils::Math::Vector2D& size = {} /* for SVG */);
         CImage(const std::span<uint8_t>&, eImageFormat);
         ~CImage();
 
@@ -31,6 +31,7 @@ namespace Hyprgraphics {
 
       private:
         std::string                                      lastError, filepath, mime;
+        Hyprutils::Math::Vector2D                        m_svgSize;
         Hyprutils::Memory::CSharedPointer<CCairoSurface> pCairoSurface;
         bool                                             imageHasAlpha = true, loadSuccess = false;
     };
