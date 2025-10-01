@@ -10,6 +10,7 @@
   libheif,
   libjpeg,
   libjxl,
+  librsvg,
   libspng,
   libwebp,
   pango,
@@ -54,6 +55,7 @@ in
       libheif
       libjpeg
       libjxl
+      librsvg
       libspng
       libwebp
       pango
