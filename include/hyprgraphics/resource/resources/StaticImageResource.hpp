@@ -9,7 +9,7 @@
 #include <hyprutils/math/Vector2D.hpp>
 
 namespace Hyprgraphics {
-    class CImageResource : public IAsyncResource {
+    class CStaticImageResource : public IAsyncResource {
       public:
         enum eTextAlignmentMode : uint8_t {
             TEXT_ALIGN_LEFT = 0,
@@ -17,14 +17,13 @@ namespace Hyprgraphics {
             TEXT_ALIGN_RIGHT,
         };
 
-        CImageResource(const std::string& path);
-        CImageResource(const std::string& svg, const Hyprutils::Math::Vector2D& size);
-        virtual ~CImageResource() = default;
+        CStaticImageResource(const std::span<const uint8_t> data, eImageFormat format);
+        virtual ~CStaticImageResource() = default;
 
         virtual void render();
 
       private:
-        std::string               m_path;
-        Hyprutils::Math::Vector2D m_svgSize;
+        const std::span<const uint8_t> m_data;
+        const eImageFormat             m_format = eImageFormat::IMAGE_FORMAT_PNG;
     };
 };
