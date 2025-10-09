@@ -8,5 +8,5 @@
 
 namespace AVIF {
     std::expected<cairo_surface_t*, std::string> createSurfaceFromAvif(const std::string&);
-    std::expected<cairo_surface_t*, std::string> createSurfaceFromAvif(const std::span<uint8_t>&);
+    std::expected<cairo_surface_t*, std::string> createSurfaceFromAvif(const std::span<const uint8_t>);
 };

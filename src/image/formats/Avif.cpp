@@ -78,7 +78,7 @@ std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const s
 
     return result;
 }
-std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const std::span<uint8_t>& buf) {
+std::expected<cairo_surface_t*, std::string> AVIF::createSurfaceFromAvif(const std::span<const uint8_t> buf) {
     heif_context*     ctx = heif_context_alloc();
     struct heif_error err = heif_context_read_from_memory(ctx, buf.data(), buf.size(), nullptr);
 

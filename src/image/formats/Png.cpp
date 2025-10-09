@@ -38,8 +38,8 @@ std::expected<cairo_surface_t*, std::string>        PNG::createSurfaceFromPNG(co
 }
 
 struct SReadState {
-    const std::span<uint8_t>& data;
-    size_t                    offset;
+    const std::span<const uint8_t> data;
+    size_t                         offset;
 };
 
 static void customReadFunction(png_structp png, png_bytep data, png_size_t length) {
@@ -53,7 +53,7 @@ static void customReadFunction(png_structp png, png_bytep data, png_size_t lengt
     state->offset += length;
 }
 
-std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std::span<uint8_t>& data) {
+std::expected<cairo_surface_t*, std::string> PNG::createSurfaceFromPNG(const std::span<const uint8_t> data) {
     png_structp png  = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
     png_infop   info = png_create_info_struct(png);
     if (!png || !info)

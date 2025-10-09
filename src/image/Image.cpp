@@ -17,7 +17,7 @@ using namespace Hyprgraphics;
 using namespace Hyprutils::Memory;
 using namespace Hyprutils::Math;
 
-Hyprgraphics::CImage::CImage(const std::span<uint8_t>& data, eImageFormat format) {
+Hyprgraphics::CImage::CImage(const std::span<const uint8_t> data, eImageFormat format) {
     std::expected<cairo_surface_t*, std::string> CAIROSURFACE;
     if (format == eImageFormat::IMAGE_FORMAT_PNG) {
         CAIROSURFACE = PNG::createSurfaceFromPNG(data);
