@@ -1,3 +1,4 @@
+#include <hyprgraphics/image/Image.hpp>
 #include <hyprgraphics/resource/resources/ImageResource.hpp>
 #include <hyprutils/memory/Atomic.hpp>
 #include <hyprutils/memory/Casts.hpp>

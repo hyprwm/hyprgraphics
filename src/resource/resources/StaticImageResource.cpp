@@ -1,5 +1,4 @@
 #include <hyprgraphics/resource/resources/StaticImageResource.hpp>
-#include <hyprgraphics/image/Image.hpp>
 #include <hyprutils/memory/Atomic.hpp>
 #include <hyprutils/memory/Casts.hpp>
 

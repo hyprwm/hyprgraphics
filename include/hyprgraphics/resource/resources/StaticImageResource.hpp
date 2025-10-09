@@ -2,6 +2,7 @@
 
 #include "./AsyncResource.hpp"
 #include "../../color/Color.hpp"
+#include "hyprgraphics/image/Image.hpp"
 
 #include <optional>
 
