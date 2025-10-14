@@ -1,5 +1,4 @@
-#include <hyprgraphics/image/Image.hpp>
-#include <hyprgraphics/resource/resources/ImageResource.hpp>
+#include <hyprgraphics/resource/resources/StaticImageResource.hpp>
 #include <hyprutils/memory/Atomic.hpp>
 #include <hyprutils/memory/Casts.hpp>
 
@@ -9,16 +8,12 @@
 using namespace Hyprgraphics;
 using namespace Hyprutils::Memory;
 
-CImageResource::CImageResource(const std::string& path) : m_path(path) {
+CStaticImageResource::CStaticImageResource(const std::span<const uint8_t> data, eImageFormat format) : m_data(data), m_format(format) {
     ;
 }
 
-CImageResource::CImageResource(const std::string& svg, const Hyprutils::Math::Vector2D& size) : m_path(svg), m_svgSize(size) {
-    ;
-}
-
-void CImageResource::render() {
-    auto image = CImage(m_path, m_svgSize);
+void CStaticImageResource::render() {
+    auto image = CImage(m_data, m_format);
 
     m_asset.cairoSurface = image.cairoSurface();
     m_asset.pixelSize    = m_asset.cairoSurface && m_asset.cairoSurface->cairo() ? m_asset.cairoSurface->size() : Hyprutils::Math::Vector2D{};

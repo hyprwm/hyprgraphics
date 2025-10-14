@@ -1,11 +1,11 @@
 #pragma once
 
-#include "AsyncResource.hpp"
+#include <string>
+#include <hyprutils/math/Vector2D.hpp>
+#include "./AsyncResource.hpp"
 #include "../../color/Color.hpp"
 
 #include <optional>
-
-#include <hyprutils/math/Vector2D.hpp>
 
 namespace Hyprgraphics {
     class CImageResource : public IAsyncResource {

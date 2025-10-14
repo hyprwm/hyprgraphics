@@ -15,7 +15,7 @@ namespace Hyprgraphics {
     class CImage {
       public:
         CImage(const std::string& path, const Hyprutils::Math::Vector2D& size = {} /* for SVG */);
-        CImage(const std::span<uint8_t>&, eImageFormat);
+        CImage(const std::span<const uint8_t>, eImageFormat);
         ~CImage();
 
         CImage(const CImage&)            = delete;
