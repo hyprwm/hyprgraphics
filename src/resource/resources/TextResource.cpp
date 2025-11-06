@@ -13,7 +13,7 @@ CTextResource::CTextResource(CTextResource::STextResourceData&& data) : m_data(s
 }
 
 void CTextResource::render() {
-    auto                  CAIROSURFACE = makeUnique<CCairoSurface>(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1920, 1080 /* dummy value */));
+    auto                  CAIROSURFACE = makeUnique<CCairoSurface>(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1 /* dummy value */));
     auto                  CAIRO        = cairo_create(CAIROSURFACE->cairo());
 
     PangoLayout*          layout = pango_cairo_create_layout(CAIRO);
@@ -60,30 +60,30 @@ void CTextResource::render() {
     pango_layout_set_attributes(layout, attrList);
     pango_attr_list_unref(attrList);
 
-    int layoutWidth, layoutHeight;
-    pango_layout_get_size(layout, &layoutWidth, &layoutHeight);
+    PangoRectangle ink, logical;
+    pango_layout_get_pixel_extents(layout, &ink, &logical);
 
     if (m_data.maxSize) {
-        layoutWidth  = m_data.maxSize->x > 0 ? std::min(layoutWidth, sc<int>(m_data.maxSize->x * PANGO_SCALE)) : layoutWidth;
-        layoutHeight = m_data.maxSize->y > 0 ? std::min(layoutHeight, sc<int>(m_data.maxSize->y * PANGO_SCALE)) : layoutHeight;
         if (m_data.ellipsize)
             pango_layout_set_ellipsize(layout, PANGO_ELLIPSIZE_END);
         if (m_data.maxSize->x >= 0)
-            pango_layout_set_width(layout, layoutWidth);
+            pango_layout_set_width(layout, std::min(logical.width * PANGO_SCALE, sc<int>(m_data.maxSize->x * PANGO_SCALE)));
         if (m_data.maxSize->y >= 0)
-            pango_layout_set_height(layout, layoutHeight);
+            pango_layout_set_height(layout, std::min(logical.height * PANGO_SCALE, sc<int>(m_data.maxSize->y * PANGO_SCALE)));
         if (m_data.wrap)
             pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 
-        pango_layout_get_size(layout, &layoutWidth, &layoutHeight);
+        pango_layout_get_pixel_extents(layout, &ink, &logical);
     }
+
+    pango_layout_get_pixel_extents(layout, &ink, &logical);
 
     // TODO: avoid this?
     cairo_destroy(CAIRO);
 
     CAIROSURFACE.reset();
 
-    m_asset.cairoSurface = makeShared<CCairoSurface>(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, layoutWidth / PANGO_SCALE, layoutHeight / PANGO_SCALE));
+    m_asset.cairoSurface = makeShared<CCairoSurface>(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, logical.width, logical.height));
     CAIRO                = cairo_create(m_asset.cairoSurface->cairo());
 
     // clear the pixmap
@@ -96,14 +96,14 @@ void CTextResource::render() {
     const auto RGB = m_data.color.asRgb();
     cairo_set_source_rgba(CAIRO, RGB.r, RGB.g, RGB.b, 1.F);
 
-    cairo_move_to(CAIRO, 0, 0);
+    cairo_move_to(CAIRO, -logical.x, -logical.y);
     pango_cairo_show_layout(CAIRO, layout);
 
     g_object_unref(layout);
 
     cairo_surface_flush(m_asset.cairoSurface->cairo());
 
-    m_asset.pixelSize = {layoutWidth / (double)PANGO_SCALE, layoutHeight / (double)PANGO_SCALE};
+    m_asset.pixelSize = {logical.width, logical.height};
 
     cairo_destroy(CAIRO);
 }
