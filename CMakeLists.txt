@@ -95,7 +95,7 @@ target_include_directories(
   PUBLIC "./include"
   PRIVATE "./src")
 set_target_properties(hyprgraphics PROPERTIES VERSION ${HYPRGRAPHICS_VERSION}
-                                              SOVERSION 1)
+                                              SOVERSION 2)
 target_link_libraries(hyprgraphics PkgConfig::deps)
 if(JXL_FOUND)
   target_link_libraries(hyprgraphics PkgConfig::JXL)
