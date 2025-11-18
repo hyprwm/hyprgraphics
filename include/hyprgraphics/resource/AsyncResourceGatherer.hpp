@@ -17,6 +17,9 @@ namespace Hyprgraphics {
 
         void enqueue(Hyprutils::Memory::CAtomicSharedPointer<IAsyncResource> resource);
 
+        // Synchronously await the resource being available
+        void await(Hyprutils::Memory::CAtomicSharedPointer<IAsyncResource> resource);
+
       private:
         std::thread m_gatherThread;
 

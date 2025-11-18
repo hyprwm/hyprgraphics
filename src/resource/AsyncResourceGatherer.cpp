@@ -1,4 +1,5 @@
 #include <hyprgraphics/resource/AsyncResourceGatherer.hpp>
+#include "resources/AsyncResource.hpp"
 
 using namespace Hyprgraphics;
 
@@ -26,6 +27,13 @@ void CAsyncResourceGatherer::enqueue(Hyprutils::Memory::CAtomicSharedPointer<IAs
     }
 
     wakeUpMainThread();
+}
+
+void CAsyncResourceGatherer::await(Hyprutils::Memory::CAtomicSharedPointer<IAsyncResource> resource) {
+    resource->m_impl->awaitingCv = Hyprutils::Memory::makeUnique<std::condition_variable>();
+    std::unique_lock<std::mutex> lk(resource->m_impl->awaitingMtx);
+    resource->m_impl->awaitingCv->wait(lk, [&resource] { return resource->m_impl->awaitingEvent; });
+    resource->m_impl->awaitingCv.reset();
 }
 
 void CAsyncResourceGatherer::asyncAssetSpinLock() {
@@ -56,6 +64,10 @@ void CAsyncResourceGatherer::asyncAssetSpinLock() {
         for (auto& r : requests) {
             r->render();
 
+            if (r->m_impl->awaitingCv) {
+                r->m_impl->awaitingEvent = true;
+                r->m_impl->awaitingCv->notify_all();
+            }
             r->m_ready = true;
             r->m_events.finished.emit();
         }

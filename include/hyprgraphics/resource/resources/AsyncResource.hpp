@@ -7,9 +7,11 @@
 #include <atomic>
 
 namespace Hyprgraphics {
+    struct SAsyncResourceImpl;
+
     class IAsyncResource {
       public:
-        IAsyncResource()          = default;
+        IAsyncResource();
         virtual ~IAsyncResource() = default;
 
         virtual void render() = 0;
@@ -29,5 +31,7 @@ namespace Hyprgraphics {
             Hyprutils::Memory::CSharedPointer<CCairoSurface> cairoSurface;
             Hyprutils::Math::Vector2D                        pixelSize;
         } m_asset;
+
+        Hyprutils::Memory::CUniquePointer<SAsyncResourceImpl> m_impl;
     };
 }
