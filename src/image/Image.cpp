@@ -1,4 +1,5 @@
 #include <hyprgraphics/image/Image.hpp>
+#include "utils/Format.hpp"
 #include "formats/Bmp.hpp"
 #include "formats/Jpeg.hpp"
 #ifdef JXL_FOUND
@@ -17,22 +18,25 @@ using namespace Hyprgraphics;
 using namespace Hyprutils::Memory;
 using namespace Hyprutils::Math;
 
-Hyprgraphics::CImage::CImage(const std::span<const uint8_t> data, eImageFormat format) {
+Hyprgraphics::CImage::CImage(std::span<const uint8_t> data, eImageFormat format, const Vector2D& size) {
+
+    const auto FORMAT = format == IMAGE_FORMAT_AUTO ? formatFromStream(data) : format;
+
+    if (FORMAT == IMAGE_FORMAT_ERROR) {
+        lastError = "invalid file";
+        return;
+    }
+
     std::expected<cairo_surface_t*, std::string> CAIROSURFACE;
-    if (format == eImageFormat::IMAGE_FORMAT_PNG) {
-        CAIROSURFACE = PNG::createSurfaceFromPNG(data);
-        mime         = "image/png";
-    } else if (format == eImageFormat::IMAGE_FORMAT_AVIF) {
-#ifndef HEIF_FOUND
-        lastError = "hyprgraphics compiled without HEIF support";
-        return;
+
+    switch (FORMAT) {
+        case IMAGE_FORMAT_PNG: CAIROSURFACE = PNG::createSurfaceFromPNG(data); break;
+#ifdef HEIF_FOUND
+        case IMAGE_FORMAT_AVIF: CAIROSURFACE = AVIF::createSurfaceFromAvif(data); break;
 #else
-        CAIROSURFACE = AVIF::createSurfaceFromAvif(data);
-        mime         = "image/avif";
+        case IMAGE_FORMAT_AVIF: lastError = "hyprgraphics compiled without HEIF support"; return;
 #endif
-    } else {
-        lastError = "Currently only PNG and AVIF images are supported for embedding";
-        return;
+        default: lastError = "Currently only PNG and AVIF images are supported for embedding"; return;
     }
 
     if (!CAIROSURFACE) {
@@ -50,90 +54,35 @@ Hyprgraphics::CImage::CImage(const std::span<const uint8_t> data, eImageFormat f
 }
 
 Hyprgraphics::CImage::CImage(const std::string& path, const Vector2D& size) : filepath(path), m_svgSize(size) {
+
+    const auto FORMAT = formatFromFile(path);
+
+    if (FORMAT == IMAGE_FORMAT_ERROR) {
+        lastError = "invalid file";
+        return;
+    }
+
     std::expected<cairo_surface_t*, std::string> CAIROSURFACE;
-    if (path.ends_with(".png") || path.ends_with(".PNG")) {
-        CAIROSURFACE = PNG::createSurfaceFromPNG(path);
-        mime         = "image/png";
-    } else if (path.ends_with(".jpg") || path.ends_with(".JPG") || path.ends_with(".jpeg") || path.ends_with(".JPEG")) {
-        CAIROSURFACE  = JPEG::createSurfaceFromJPEG(path);
-        imageHasAlpha = false;
-        mime          = "image/jpeg";
-    } else if (path.ends_with(".bmp") || path.ends_with(".BMP")) {
-        CAIROSURFACE  = BMP::createSurfaceFromBMP(path);
-        imageHasAlpha = false;
-        mime          = "image/bmp";
-    } else if (path.ends_with(".webp") || path.ends_with(".WEBP")) {
-        CAIROSURFACE = WEBP::createSurfaceFromWEBP(path);
-        mime         = "image/webp";
-    } else if (path.ends_with(".svg") || path.ends_with(".SVG")) {
-        CAIROSURFACE = SVG::createSurfaceFromSVG(path, m_svgSize);
-        mime         = "image/svg";
-    } else if (path.ends_with(".jxl") || path.ends_with(".JXL")) {
 
-#ifdef JXL_FOUND
-        CAIROSURFACE = JXL::createSurfaceFromJXL(path);
-        mime         = "image/jxl";
-#else
-        lastError = "hyprgraphics compiled without JXL support";
-        return;
-#endif
+    mime = mimeOf(FORMAT);
 
-    } else if (path.ends_with(".avif") || path.ends_with(".AVIF")) {
-
+    switch (FORMAT) {
+        case IMAGE_FORMAT_PNG: CAIROSURFACE = PNG::createSurfaceFromPNG(path); break;
+        case IMAGE_FORMAT_BMP: CAIROSURFACE = BMP::createSurfaceFromBMP(path); break;
 #ifdef HEIF_FOUND
-        CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
-        mime         = "image/avif";
+        case IMAGE_FORMAT_AVIF: CAIROSURFACE = AVIF::createSurfaceFromAvif(path); break;
 #else
-        lastError = "hyprgraphics compiled without HEIF support";
-        return;
+        case IMAGE_FORMAT_AVIF: lastError = "hyprgraphics compiled without HEIF support"; return;
 #endif
-
-    } else {
-        // magic is slow, so only use it when no recognized extension is found
-        auto handle = magic_open(MAGIC_NONE | MAGIC_COMPRESS | MAGIC_SYMLINK);
-        magic_load(handle, nullptr);
-
-        const auto type_str = std::string(magic_file(handle, path.c_str()));
-
-        magic_close(handle);
-
-        const auto first_word = type_str.substr(0, type_str.find(' '));
-
-        if (first_word == "PNG") {
-            CAIROSURFACE = PNG::createSurfaceFromPNG(path);
-            mime         = "image/png";
-        } else if (first_word == "JPEG" && !type_str.contains("XL") && !type_str.contains("2000")) {
-            CAIROSURFACE  = JPEG::createSurfaceFromJPEG(path);
-            imageHasAlpha = false;
-            mime          = "image/jpeg";
-        } else if (first_word == "JPEG" && type_str.contains("XL")) {
 #ifdef JXL_FOUND
-            CAIROSURFACE = JXL::createSurfaceFromJXL(path);
-            mime         = "image/jxl";
+        case IMAGE_FORMAT_JXL: CAIROSURFACE = JXL::createSurfaceFromJXL(path); break;
 #else
-            lastError = "hyprgraphics compiled without JXL support";
-            return;
+        case IMAGE_FORMAT_JXL: lastError = "hyprgraphics compiled without JXL support"; return;
 #endif
-        } else if (type_str.contains("AVIF")) { // libmagic can identify AVIF images as "ISO Media, AVIF Image"
-#ifdef HEIF_FOUND
-            CAIROSURFACE = AVIF::createSurfaceFromAvif(path);
-            mime         = "image/avif";
-#else
-            lastError = "hyprgraphics compiled without AVIF support";
-            return;
-#endif
-        } else if (first_word == "BMP") {
-            CAIROSURFACE  = BMP::createSurfaceFromBMP(path);
-            imageHasAlpha = false;
-            mime          = "image/bmp";
-        } else if (first_word == "SVG") {
-            CAIROSURFACE  = SVG::createSurfaceFromSVG(path, m_svgSize);
-            imageHasAlpha = false;
-            mime          = "image/svg";
-        } else {
-            lastError = "unrecognized image";
-            return;
-        }
+        case IMAGE_FORMAT_JPEG: CAIROSURFACE = JPEG::createSurfaceFromJPEG(path); break;
+        case IMAGE_FORMAT_SVG: CAIROSURFACE = SVG::createSurfaceFromSVG(path, size); break;
+        case IMAGE_FORMAT_WEBP: CAIROSURFACE = WEBP::createSurfaceFromWEBP(path); break;
+        default: lastError = "internal error"; return;
     }
 
     if (!CAIROSURFACE) {
