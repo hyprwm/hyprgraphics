@@ -61,3 +61,36 @@ std::expected<cairo_surface_t*, std::string> SVG::createSurfaceFromSVG(const std
 
     return cairoSurface;
 }
+
+std::expected<cairo_surface_t*, std::string> SVG::createSurfaceFromData(const std::span<const uint8_t>& data, const Vector2D& size) {
+    if (size.x < 1 || size.y < 1)
+        return std::unexpected("loading svg: invalid size");
+
+    auto       cairoSurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, size.x, size.y);
+
+    const auto PCAIRO = cairo_create(cairoSurface);
+
+    cairo_save(PCAIRO);
+    cairo_set_operator(PCAIRO, CAIRO_OPERATOR_CLEAR);
+    cairo_paint(PCAIRO);
+    cairo_restore(PCAIRO);
+
+    GError*     error = nullptr;
+
+    RsvgHandle* handle = rsvg_handle_new_from_data((unsigned char*)data.data(), data.size(), &error);
+
+    if (!handle)
+        return std::unexpected("loading svg: rsvg failed to read data");
+
+    RsvgRectangle rect = {0, 0, (double)size.x, (double)size.y};
+
+    if (!rsvg_handle_render_document(handle, PCAIRO, &rect, &error))
+        return std::unexpected("loading svg: rsvg failed to render");
+
+    // done
+    cairo_surface_flush(cairoSurface);
+    cairo_destroy(PCAIRO);
+    g_object_unref(handle);
+
+    return cairoSurface;
+}

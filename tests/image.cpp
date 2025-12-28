@@ -88,12 +88,15 @@ int main(int argc, char** argv, char** envp) {
     }
 
     auto pngBuffer = getImageBuffer("./resource/images/hyprland.png");
-    EXPECT(tryLoadImageFromBuffer(pngBuffer, Hyprgraphics::IMAGE_FORMAT_PNG), true);
+    EXPECT(tryLoadImageFromBuffer(pngBuffer, Hyprgraphics::IMAGE_FORMAT_AUTO), true);
 
 #ifdef HEIF_FOUND
     auto avifBuffer = getImageBuffer("./resource/images/hyprland.avif");
     EXPECT(tryLoadImageFromBuffer(avifBuffer, Hyprgraphics::IMAGE_FORMAT_AVIF), true);
 #endif
+
+    auto svgBuffer = getImageBuffer("./resource/images/hyprland.svg");
+    EXPECT(tryLoadImageFromBuffer(pngBuffer, Hyprgraphics::IMAGE_FORMAT_AUTO), true);
 
     return ret;
 }
