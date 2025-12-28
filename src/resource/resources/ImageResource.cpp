@@ -17,8 +17,12 @@ CImageResource::CImageResource(const std::string& svg, const Hyprutils::Math::Ve
     ;
 }
 
+CImageResource::CImageResource(const std::span<const uint8_t>& data, const Hyprutils::Math::Vector2D& size) : m_svgSize(size), m_data(data) {
+    ;
+}
+
 void CImageResource::render() {
-    auto image = CImage(m_path, m_svgSize);
+    auto image = !m_data.empty() ? CImage(m_data, IMAGE_FORMAT_AUTO, m_svgSize) : CImage(m_path, m_svgSize);
 
     m_asset.cairoSurface = image.cairoSurface();
     m_asset.pixelSize    = m_asset.cairoSurface && m_asset.cairoSurface->cairo() ? m_asset.cairoSurface->size() : Hyprutils::Math::Vector2D{};

@@ -18,6 +18,7 @@ namespace Hyprgraphics {
 
         CImageResource(const std::string& path);
         CImageResource(const std::string& svg, const Hyprutils::Math::Vector2D& size);
+        CImageResource(const std::span<const uint8_t>& data, const Hyprutils::Math::Vector2D& size = {} /* unused if not svg */);
         virtual ~CImageResource() = default;
 
         virtual void render();
@@ -25,5 +26,6 @@ namespace Hyprgraphics {
       private:
         std::string               m_path;
         Hyprutils::Math::Vector2D m_svgSize;
+        std::span<const uint8_t>  m_data;
     };
 };
