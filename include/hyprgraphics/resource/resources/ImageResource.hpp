@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <span>
 #include <hyprutils/math/Vector2D.hpp>
 #include "./AsyncResource.hpp"
 #include "../../color/Color.hpp"

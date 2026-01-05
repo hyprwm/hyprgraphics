@@ -3,6 +3,7 @@
 #include <cairo/cairo.h>
 #include <string>
 #include <expected>
+#include <span>
 #include <png.h>
 #include <hyprutils/math/Vector2D.hpp>
 
