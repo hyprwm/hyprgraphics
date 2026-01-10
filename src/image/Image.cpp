@@ -125,10 +125,5 @@ std::string Hyprgraphics::CImage::getMime() {
 }
 
 bool Hyprgraphics::CImage::isImageFile(const std::string& path) {
-    bool result;
-    {
-        CImage test(path);
-        result = test.success();
-    } // test destroyed here, memory freed
-    return result;
+    return formatFromFile(path) != IMAGE_FORMAT_ERROR;
 }
