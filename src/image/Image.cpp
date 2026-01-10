@@ -123,3 +123,12 @@ Hyprutils::Memory::CSharedPointer<CCairoSurface> Hyprgraphics::CImage::cairoSurf
 std::string Hyprgraphics::CImage::getMime() {
     return mime;
 }
+
+bool Hyprgraphics::CImage::isImageFile(const std::string& path) {
+    bool result;
+    {
+        CImage test(path);
+        result = test.success();
+    } // test destroyed here, memory freed
+    return result;
+}
