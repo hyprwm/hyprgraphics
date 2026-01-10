@@ -37,6 +37,8 @@ namespace Hyprgraphics {
 
         Hyprutils::Memory::CSharedPointer<CCairoSurface> cairoSurface();
 
+        static bool                                      isImageFile(const std::string& path);
+
       private:
         std::string                                      lastError, filepath, mime;
         Hyprutils::Math::Vector2D                        m_svgSize;
