@@ -17,9 +17,6 @@ std::expected<cairo_surface_t*, std::string> JPEG::createSurfaceFromJPEG(const s
     if (!std::filesystem::exists(path))
         return std::unexpected("loading jpeg: file doesn't exist");
 
-    if (__BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__)
-        return std::unexpected("loading jpeg: cannot load on big endian");
-
     std::ifstream file(path, std::ios::binary | std::ios::ate);
     file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
     std::vector<uint8_t> bytes(file.tellg());
