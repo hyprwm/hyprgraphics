@@ -47,11 +47,15 @@ endif()
 file(GLOB_RECURSE SRCFILES CONFIGURE_DEPENDS "src/*.cpp" "include/*.hpp")
 file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS "include/*.hpp")
 
+set(GLES_VERSION "GLES3")
+find_package(OpenGL REQUIRED COMPONENTS ${GLES_VERSION})
+
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(
   deps
   REQUIRED
   IMPORTED_TARGET
+  libdrm
   pixman-1
   cairo
   pangocairo
