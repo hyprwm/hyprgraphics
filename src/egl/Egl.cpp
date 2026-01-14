@@ -1,3 +1,4 @@
+#include <cmath>
 #include <hyprgraphics/egl/Egl.hpp>
 #include <hyprutils/memory/Casts.hpp>
 #include <vector>
@@ -249,5 +250,13 @@ namespace Hyprgraphics::Egl {
             return false;
 
         return !FMT->withAlpha;
+    }
+
+    int pixelsPerBlock(const SPixelFormat* const fmt) {
+        return fmt->blockSize.x * fmt->blockSize.y > 0 ? fmt->blockSize.x * fmt->blockSize.y : 1;
+    }
+
+    int minStride(const SPixelFormat* const fmt, int32_t width) {
+        return std::ceil((width * fmt->bytesPerBlock) / pixelsPerBlock(fmt));
     }
 }
