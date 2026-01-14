@@ -52,6 +52,8 @@ pkg_check_modules(
   deps
   REQUIRED
   IMPORTED_TARGET
+  libdrm
+  glesv2
   pixman-1
   cairo
   pangocairo
