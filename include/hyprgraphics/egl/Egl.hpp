@@ -42,4 +42,6 @@ namespace Hyprgraphics::Egl {
     const SPixelFormat* getPixelFormatFromDRM(uint32_t drmFormat);
     const SPixelFormat* getPixelFormatFromGL(uint32_t glFormat, uint32_t glType, bool alpha);
     bool                isDrmFormatOpaque(uint32_t drmFormat);
+    int                 pixelsPerBlock(const SPixelFormat* const fmt);
+    int                 minStride(const SPixelFormat* const fmt, int32_t width);
 }
