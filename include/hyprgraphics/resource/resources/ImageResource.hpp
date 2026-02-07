@@ -7,6 +7,7 @@
 #include "../../color/Color.hpp"
 
 #include <optional>
+#include <span>
 
 namespace Hyprgraphics {
     class CImageResource : public IAsyncResource {

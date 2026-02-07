@@ -5,6 +5,7 @@
 #include "hyprgraphics/image/Image.hpp"
 
 #include <optional>
+#include <span>
 
 #include <hyprutils/math/Vector2D.hpp>
 
