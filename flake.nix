@@ -26,38 +26,12 @@
         system:
         import nixpkgs {
           localSystem.system = system;
-          overlays = with self.overlays; [ hyprgraphics ];
+          overlays = with self.overlays; [ hyprgraphics-with-deps ];
         }
       );
-      mkDate =
-        longDate:
-        (lib.concatStringsSep "-" [
-          (builtins.substring 0 4 longDate)
-          (builtins.substring 4 2 longDate)
-          (builtins.substring 6 2 longDate)
-        ]);
-
-      version = lib.removeSuffix "\n" (builtins.readFile ./VERSION);
     in
     {
-      overlays = {
-        default = self.overlays.hyprgraphics;
-        hyprgraphics = lib.composeManyExtensions [
-          inputs.hyprutils.overlays.default
-          (final: prev: {
-            hyprgraphics = final.callPackage ./nix/default.nix {
-              stdenv = final.gcc15Stdenv;
-              version =
-                version
-                + "+date="
-                + (mkDate (self.lastModifiedDate or "19700101"))
-                + "_"
-                + (self.shortRev or "dirty");
-            };
-            hyprgraphics-with-tests = final.hyprgraphics.override { doCheck = true; };
-          })
-        ];
-      };
+      overlays = import ./nix/overlays.nix { inherit inputs lib self; };
 
       packages = eachSystem (system: {
         default = self.packages.${system}.hyprgraphics;
