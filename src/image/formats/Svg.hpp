@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cairo/cairo.h>
 #include <string>
 #include <expected>
