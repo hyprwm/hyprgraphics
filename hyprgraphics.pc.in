@@ -4,7 +4,9 @@ libdir=@LIBDIR@
 
 Name: hyprgraphics
 URL: https://github.com/hyprwm/hyprgraphics
-Description: Hyprland graphics utilities library used across the ecosystem 
+Description: Hyprland graphics utilities library used across the ecosystem
 Version: @HYPRGRAPHICS_VERSION@
+Requires: cairo hyprutils pangocairo glesv2
+Requires.private: libdrm pixman-1 libpng libjpeg libwebp librsvg-2.0 libmagic libjxl libjxl_cms libjxl_threads libheif
 Cflags: -I${includedir}
 Libs: -L${libdir} -lhyprgraphics
