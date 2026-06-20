@@ -20,6 +20,8 @@ void CTextResource::render() {
 
     PangoFontDescription* fontDesc = pango_font_description_from_string(m_data.font.c_str());
     pango_font_description_set_size(fontDesc, m_data.fontSize * PANGO_SCALE);
+    pango_font_description_set_weight(fontDesc, static_cast<PangoWeight>(m_data.weight));
+    pango_font_description_set_style(fontDesc, m_data.italic ? PANGO_STYLE_ITALIC : PANGO_STYLE_NORMAL);
     pango_layout_set_font_description(layout, fontDesc);
     pango_font_description_free(fontDesc);
 

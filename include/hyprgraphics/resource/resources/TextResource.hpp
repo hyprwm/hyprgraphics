@@ -4,6 +4,7 @@
 #include "../../color/Color.hpp"
 
 #include <cairo/cairo.h>
+#include <pango/pango-font.h>
 
 #include <optional>
 
@@ -29,6 +30,8 @@ namespace Hyprgraphics {
             cairo_hint_style_t                       hintStyle = CAIRO_HINT_STYLE_SLIGHT;
             bool                                     ellipsize = false;
             bool                                     wrap      = true;
+            int                                      weight    = PANGO_WEIGHT_NORMAL;
+            bool                                     italic    = false;
         };
 
         CTextResource(STextResourceData&& data);
