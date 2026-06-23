@@ -18,8 +18,6 @@ set(PREFIX ${CMAKE_INSTALL_PREFIX})
 set(INCLUDE ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 set(LIBDIR ${CMAKE_INSTALL_FULL_LIBDIR})
 
-configure_file(hyprgraphics.pc.in hyprgraphics.pc @ONLY)
-
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 # -Wno-missing-braces for clang
@@ -92,6 +90,19 @@ if(NOT HEIF_FOUND)
 else()
   add_compile_definitions(HEIF_FOUND)
 endif()
+
+# Build the pkg-config Requires.private list, only advertising optional deps
+# that were actually found and linked, so downstream pkg-config resolution
+# does not fail on systems where e.g. libheif / libjxl are absent.
+set(HYPRGRAPHICS_PRIVATE_REQUIRES "libdrm pixman-1 libpng libjpeg libwebp librsvg-2.0 libmagic")
+if(JXL_FOUND)
+  string(APPEND HYPRGRAPHICS_PRIVATE_REQUIRES " libjxl libjxl_cms libjxl_threads")
+endif()
+if(HEIF_FOUND)
+  string(APPEND HYPRGRAPHICS_PRIVATE_REQUIRES " libheif")
+endif()
+
+configure_file(hyprgraphics.pc.in hyprgraphics.pc @ONLY)
 
 add_library(hyprgraphics SHARED ${SRCFILES})
 target_include_directories(
