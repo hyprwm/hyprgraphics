@@ -53,19 +53,22 @@ customStdenv.mkDerivation {
     pkg-config
   ];
 
-  buildInputs = [
+  propagatedBuildInputs = [
     cairo
-    file
-    hyprutils
-    libGL
+    pango
     libdrm
+    libGL
+  ];
+
+  buildInputs = [
+    file
     libheif
     libjpeg
     libjxl
     librsvg
     libspng
     libwebp
-    pango
+    hyprutils
     pixman
   ];
 
@@ -73,6 +76,8 @@ customStdenv.mkDerivation {
     "out"
     "dev"
   ];
+
+  strictDeps = true;
 
   cmakeBuildType = if debug then "Debug" else "RelWithDebInfo";
 
