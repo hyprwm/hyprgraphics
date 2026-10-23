@@ -19,6 +19,7 @@ Dep list:
  - libjxl [optional]
  - libjxl_cms [optional]
  - libjxl_threads [optional]
+ - libheif [optional]
  - libmagic
  - libpng
  - librsvg2
