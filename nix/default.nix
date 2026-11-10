@@ -55,20 +55,20 @@ customStdenv.mkDerivation {
 
   propagatedBuildInputs = [
     cairo
-    pango
-    libdrm
+    hyprutils
     libGL
+    pango
   ];
 
   buildInputs = [
     file
+    libdrm
     libheif
     libjpeg
     libjxl
     librsvg
     libspng
     libwebp
-    hyprutils
     pixman
   ];
 
