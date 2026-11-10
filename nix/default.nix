@@ -16,7 +16,6 @@
   libspng,
   libwebp,
   pango,
-  pixman,
   version ? "git",
   doCheck ? false,
   debug ? false,
@@ -69,7 +68,6 @@ customStdenv.mkDerivation {
     librsvg
     libspng
     libwebp
-    pixman
   ];
 
   outputs = [
