@@ -137,6 +137,10 @@ add_test(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests
   COMMAND hyprgraphics_arg "image")
 add_dependencies(tests hyprgraphics_arg)
+add_executable(hyprgraphics_text "tests/text.cpp")
+target_link_libraries(hyprgraphics_text PRIVATE hyprgraphics PkgConfig::deps)
+add_test(NAME Text COMMAND hyprgraphics_text)
+add_dependencies(tests hyprgraphics_text)
 
 # Installation
 install(TARGETS hyprgraphics)
