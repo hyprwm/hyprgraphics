@@ -5,6 +5,7 @@
   cmake,
   pkg-config,
   cairo,
+  dejavu_fonts,
   file,
   hyprutils,
   libGL,
@@ -15,6 +16,7 @@
   librsvg,
   libspng,
   libwebp,
+  makeFontsConf,
   pango,
   pixman,
   version ? "git",
@@ -71,6 +73,10 @@ customStdenv.mkDerivation {
     hyprutils
     pixman
   ];
+
+  env = lib.optionalAttrs doCheck {
+    FONTCONFIG_FILE = makeFontsConf { fontDirectories = [ dejavu_fonts ]; };
+  };
 
   outputs = [
     "out"

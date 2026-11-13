@@ -29,8 +29,9 @@ namespace Hyprgraphics {
             cairo_hint_style_t                       hintStyle = CAIRO_HINT_STYLE_SLIGHT;
             bool                                     ellipsize = false;
             bool                                     wrap      = true;
-            int                                      weight    = 400;
-            bool                                     italic    = false;
+            // Negative values preserve the corresponding attribute from the font description.
+            int                                      weight    = -1;
+            int                                      italic    = -1;
         };
 
         CTextResource(STextResourceData&& data);
