@@ -29,8 +29,8 @@ namespace Hyprgraphics {
             cairo_hint_style_t                       hintStyle = CAIRO_HINT_STYLE_SLIGHT;
             bool                                     ellipsize = false;
             bool                                     wrap      = true;
-            int                                      weight    = 400;
-            bool                                     italic    = false;
+            std::optional<int>                       weight;
+            std::optional<bool>                      italic;
         };
 
         CTextResource(STextResourceData&& data);
