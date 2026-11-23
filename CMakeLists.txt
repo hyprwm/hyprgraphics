@@ -141,6 +141,10 @@ add_executable(hyprgraphics_text "tests/text.cpp")
 target_link_libraries(hyprgraphics_text PRIVATE hyprgraphics PkgConfig::deps)
 add_test(NAME Text COMMAND hyprgraphics_text)
 add_dependencies(tests hyprgraphics_text)
+add_executable(hyprgraphics_gatherer "tests/gatherer.cpp")
+target_link_libraries(hyprgraphics_gatherer PRIVATE hyprgraphics PkgConfig::deps)
+add_test(NAME Gatherer COMMAND hyprgraphics_gatherer)
+add_dependencies(tests hyprgraphics_gatherer)
 
 # Installation
 install(TARGETS hyprgraphics)
